@@ -1,5 +1,0 @@
-{
-  "app": "node --import tsx bin/patients.ts",
-  "versionReporting": false,
-  "context": {}
-}

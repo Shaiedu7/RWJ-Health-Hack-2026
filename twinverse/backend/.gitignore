@@ -1,8 +1,0 @@
-node_modules/
-cdk.out/
-*.tsbuildinfo
-
-
-.env
-.env.*
-!.env.server.example

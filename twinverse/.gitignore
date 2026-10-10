@@ -1,0 +1,10 @@
+node_modules/
+dist/
+cdk.out/
+review/
+.env
+.env.*
+!.env.server.example
+.DS_Store
+*.log
+*.tsbuildinfo

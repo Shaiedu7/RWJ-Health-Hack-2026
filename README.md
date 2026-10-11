@@ -4,7 +4,7 @@
 
 ## Run locally
 
-Use Node.js 24 or later. Follow [AWS credentials setup](aws/README.md) first. No AWS resources are created by starting the app.
+Use Node.js 24 or later. Follow [AWS credentials setup](twinverse/aws/README.md) first. No AWS resources are created by starting the app.
 
 In `twinverse/backend`, run `npm ci`, then:
 
@@ -20,9 +20,9 @@ npm run dev -- --host 127.0.0.1 --port 8443
 
 Open http://127.0.0.1:8443/ for students or http://127.0.0.1:8443/faculty.html for faculty. Faculty access requires the existing Cognito Faculty group. A shared AWS account does not automatically grant a Cognito user faculty access.
 
-Text conversations and faculty generation/checking use the existing Bedrock model. Spoken replies and microphone transcription require server-side ElevenLabs configuration. See the backend documentation and `.env.server.example`; the dynamic secret reference must be resolved by `asm-exec`, not passed literally to ElevenLabs. Do not put real secrets in example files or frontend configuration.
+Text conversations and faculty generation/checking use the existing Bedrock model. Spoken replies and microphone transcription require server-side ElevenLabs configuration. See the backend documentation and `twinverse/backend/.env.server.example`; the dynamic secret reference must be resolved by `asm-exec`, not passed literally to ElevenLabs. Do not put real secrets in example files or frontend configuration.
 
-Wyatt remains an unapproved development preview. Faculty draft saving, JSON/YAML import, AI generation, consistency review and publishing are included. Ending a student session locks the encounter and opens the rubric feedback report; faculty review reports and add comments at http://127.0.0.1:8443/feedback/faculty. Feedback is scored by the backend (`backend/lib/encounter-feedback.ts`, rubric in `encounter-rubric.json`). Set `VITE_FEEDBACK_SOURCE=sample` in `frontend/.env.local` to show offline sample reports instead. JSON/YAML import maps data deterministically; it does not automatically invent missing fields with AI.
+Wyatt remains an unapproved development preview. Faculty draft saving, JSON/YAML import, AI generation, consistency review and publishing are included. Ending a student session locks the encounter and opens the rubric feedback report; faculty review reports and add comments at http://127.0.0.1:8443/feedback/faculty. Feedback is scored by the backend (`twinverse/backend/lib/encounter-feedback.ts`, rubric in `twinverse/backend/lib/encounter-rubric.json`). Set `VITE_FEEDBACK_SOURCE=sample` in `twinverse/frontend/.env.local` to show offline sample reports instead. JSON/YAML import maps data deterministically; it does not automatically invent missing fields with AI.
 
 AWS credentials are read only from the `twinverse-event` profile in `~/.aws/credentials`. Exported `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY`/`AWS_SESSION_TOKEN` variables are ignored. When the temporary credentials expire, replace all three values in that file and restart the backend.
 

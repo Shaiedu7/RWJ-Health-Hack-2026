@@ -78,6 +78,10 @@ export function studioContext(
     nutrition_profile: profile["nutrition"] as SourceValue,
     psychosocial_profile: p,
   };
+  const artifacts = ((profile["artifacts"] ?? []) as import("./patient-files.js").PatientFile[]).filter(f=>f.reviewed===true);
+  for(const file of artifacts) chartFindings.push({label:file.title,value:file.findings??"",group:`artifact:${file.id}`,trigger:file.trigger as ChartFinding["trigger"]});
+  const patientRecords = ((profile["knowledge"] ?? []) as (import("./patient-files.js").PatientFile & {purpose?:string})[]).filter(f=>f.reviewed===true && f.purpose==="patient_record");
+  if(patientRecords.length)info["reviewed_patient_records"]=patientRecords.map(f=>({title:f.title,text:f.text??""}));
   const evidence = flattenEvidence(info);
   chartFindings.forEach((item, i) => {
     evidence[`chart.${i}.value`] = item.value;
@@ -108,7 +112,7 @@ export function studioContext(
         ? ["Allergy status is unknown: no negative finding supplied."]
         : [],
     reviewOnly: {
-      teachingObjectives: null,
+      teachingObjectives: profile["learning"] as SourceValue,
       sourceMetadata: null,
       disclosureCategories: null,
       disclosureExecutable: false as const,
@@ -116,6 +120,7 @@ export function studioContext(
       overviewNarrative: null,
     },
     publishedVersionId: version,
+    artifacts,
     chartFindings,
     disclosureRules: profile["disclosure"] as SourceValue,
   };

@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
-import { authRoute, authenticatedStudent } from "../lib/student-auth.js";
+import { authRoute, authenticatedStudent, sessionAllowsFaculty } from "../lib/student-auth.js";
 
 test("Cognito flow uses PKCE and rejects forged sessions and mismatched callback state", async () => {
   const server = createServer(async (req, res) => {
@@ -32,3 +32,10 @@ test("Cognito flow uses PKCE and rejects forged sessions and mismatched callback
     assert.equal((await fetch(`${base}/api/auth/logout`, { method: "POST", headers: { ...headers, Origin: "http://untrusted.example" } })).status, 403);
   } finally { await new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve())); }
 });
+
+ test("student login cannot grant faculty access even for a dual-role account", () => {
+ assert.equal(sessionAllowsFaculty("student", ["Faculty"]), false);
+ assert.equal(sessionAllowsFaculty("faculty", []), false);
+ assert.equal(sessionAllowsFaculty("faculty", ["Faculty"]), true);
+ assert.equal(sessionAllowsFaculty(undefined, ["Faculty"]), false);
+ });

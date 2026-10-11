@@ -83,6 +83,19 @@ export function reviewProfile(value: unknown): Issue[] {
       "demographics.age",
       "Review and enter the patient age before publishing.",
     );
+  for (const category of ["artifacts", "knowledge"]) {
+    for (const file of (p[category] as unknown as Record<string, unknown>[] ?? [])) {
+      if (file["reviewed"] !== true) add(category, "Review the uploaded document and its extracted text before publishing.");
+      if (!String(file[category === "artifacts" ? "findings" : "text"] ?? "").trim()) add(category, "Enter reviewed document text before publishing.");
+      if (category === "artifacts" && !(file["trigger"] as {type?:string}|undefined)?.type) add(category, "A report has no release trigger and will stay hidden from students.", "warning");
+      const trigger=file["trigger"] as {type?:string;value?:string}|undefined;
+      if(category === "artifacts" && trigger?.type) {
+        if(!["start","topic_asked","exam_requested","after_turns"].includes(trigger.type))add(category,"Choose a supported report trigger.");
+        else if(trigger.type!=="start" && !trigger.value?.trim())add(category,"Enter the report release condition.");
+        else if(trigger.type==="after_turns" && (!/^\d+$/.test(trigger.value??"") || Number(trigger.value)<1 || Number(trigger.value)>40))add(category,"Report release must be between 1 and 40 turns.");
+      }
+    }
+  }
   const c = p["clinical"] ?? {};
   const medications = (p["medications"]?.["current"] ?? []) as Record<
     string,

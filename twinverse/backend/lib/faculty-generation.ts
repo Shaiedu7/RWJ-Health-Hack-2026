@@ -43,6 +43,7 @@ export function generatedProfile(
     );
   }
   const profile = validateFacultyProfile(value);
+  if ((profile["artifacts"] as unknown[]).length || (profile["knowledge"] as unknown[]).length) throw new FacultyError(502,"AI cannot create attached files. Upload documents separately.");
   for (const section of Object.keys(blankFacultyProfile()))
     if (!Object.hasOwn(value as object, section))
       throw new FacultyError(

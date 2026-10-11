@@ -7,6 +7,7 @@ export type SourceValue = string | number | boolean | null | SourceValue[] | { [
 export type Conflict = { field: string; values: string[]; qualifiedAnswer: string };
 export type PatientCard = { patientId: string; mode: "development-preview" | "published"; approved: boolean; source: "Hugging Face" | "CSV" | "Faculty"; fields: { name: string; age?: number; background?: string; gender?: string } };
 export type PreviewContext = {
+  artifacts?: import("./patient-files.js").PatientFile[];
   publishedVersionId?: string; chartFindings?: import("./published-context.js").ChartFinding[]; disclosureRules?: SourceValue;
   schemaVersion: 2; patientId: string; draftRevision: number; sourceHash: string; contextHash: string;
   card: PatientCard; sourceSections: Record<string, SourceValue>; patientInformation: Record<string, SourceValue>;

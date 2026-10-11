@@ -6,7 +6,7 @@ import { fromNodeProviderChain } from "@aws-sdk/credential-providers";
 import { REGION, TABLE_NAME } from "./patients-stack.js";
 import { type ChatMessage, type GroundedReply } from "./preview-conversation.js";
 import { CSV_WYATT_ID, RICH_WYATT_ID, verifyContext, type PreviewContext } from "./preview-context.js";
-export type Encounter = { endedAt?: string; feedback?: import("./encounter-feedback.js").EncounterFeedback; encounterId: string; patientId: string; mode: "development-preview" | "published"; context?: PreviewContext; revision: number; version: number; messages: ChatMessage[]; requests: Record<string, { hash: string; revision: number }>; pending?: { requestId: string; hash: string; until: number }; updatedAt: string };
+export type Encounter = { endedAt?: string; feedback?: import("./session-feedback.js").EncounterFeedback; encounterId: string; patientId: string; mode: "development-preview" | "published"; context?: PreviewContext; revision: number; version: number; messages: ChatMessage[]; requests: Record<string, { hash: string; revision: number }>; pending?: { requestId: string; hash: string; until: number }; updatedAt: string };
 export class EncounterError extends Error { constructor(public status: number, message: string) { super(message); this.name = "EncounterError"; } }
 export interface EncounterStore { get(student: string, encounterId: string): Promise<Encounter | undefined>; list(student: string): Promise<Encounter[]>; save(student: string, next: Encounter, expectedVersion?: number): Promise<void> }
 export function createEncounterStore(): EncounterStore {

@@ -201,7 +201,7 @@ export default function FacultyFeedback() {
       <main className={`mx-auto px-4 pb-20 md:px-6 ${wide ? "max-w-[1600px]" : "max-w-5xl"}`}>
         {access === "checking" && <p className="text-ink-3" role="status">Checking faculty sign-in…</p>}
         {access === "denied" && <section className="rounded-[28px] border border-line bg-card p-7"><h1 className="font-display text-2xl">Faculty sign-in required</h1><p className="mt-3 text-ink-3">Sign in with a faculty account to review student assessments.</p><a href="/api/auth/login?destination=faculty" className="mt-5 inline-block rounded-full bg-teal px-5 py-3 text-sm font-semibold text-white">Sign in</a></section>}
-        {access === "granted" && !LIVE && <p className="mb-6 rounded-2xl border border-amber-600/40 bg-amber-soft px-5 py-3 text-sm text-amber-900" role="note"><strong>Sample data.</strong> This shows a built-in sample plus encounters ended in this browser. Feedback is stored in this browser only.</p>}
+        {access === "granted" && !LIVE && <p className="mb-6 rounded-2xl border border-amber-600/40 bg-amber-soft px-5 py-3 text-sm text-amber-900" role="note"><strong>Sample data.</strong> This shows three demo encounters plus encounters ended in this browser. Feedback is stored in this browser only.</p>}
         {access === "granted" && (view.encounter ? (
           <Review encounterId={view.encounter} backLabel={view.student ? "This student's assessments" : view.tab === "encounters" ? "All encounters" : "All students"}
             onBack={() => go({ ...view, encounter: null })} />

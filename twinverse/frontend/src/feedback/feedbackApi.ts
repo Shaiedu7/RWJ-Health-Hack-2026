@@ -16,7 +16,8 @@
  */
 import type { CommentTarget, FacultyComment, FeedbackReport, ReviewDetail, ReviewEntry, StudentRow, TranscriptMessage } from "./types.ts";
 import { normalizeComments, normalizeReport } from "./normalize.ts";
-import { buildSampleReport, SAMPLE_ENCOUNTER_ID, SAMPLE_MESSAGES, SAMPLE_PATIENT, SAMPLE_STUDENT } from "./sample.ts";
+import { buildSampleReport } from "./sample.ts";
+import { DEMO_CASES } from "./demoCases.ts";
 
 export const LIVE = import.meta.env.VITE_FEEDBACK_SOURCE !== "sample";
 const preview = "?mode=development-preview";
@@ -34,17 +35,18 @@ export interface FeedbackApi {
 
 // ---------- sample data ----------
 type Stored = { encounterId: string; studentName: string; patientName: string; messages: TranscriptMessage[]; comments: FacultyComment[] };
-const KEY = "twinverse.feedback.sample.v1";
-const builtIn = (): Stored => ({ encounterId: SAMPLE_ENCOUNTER_ID, studentName: SAMPLE_STUDENT, patientName: SAMPLE_PATIENT, messages: SAMPLE_MESSAGES, comments: [] });
+const KEY = "twinverse.feedback.sample.v2";
+const DEMO = new Map(DEMO_CASES.map((demo) => [demo.encounterId, demo]));
 function readAll(): Record<string, Stored> {
   let saved: Record<string, Stored> = {};
-  try { saved = JSON.parse(localStorage.getItem(KEY) ?? "{}") as Record<string, Stored>; } catch { /* unreadable storage: start from the built-in sample */ }
-  return { [SAMPLE_ENCOUNTER_ID]: { ...builtIn(), comments: saved[SAMPLE_ENCOUNTER_ID]?.comments ?? [] }, ...Object.fromEntries(Object.entries(saved).filter(([id]) => id !== SAMPLE_ENCOUNTER_ID)) };
+  try { saved = JSON.parse(localStorage.getItem(KEY) ?? "{}") as Record<string, Stored>; } catch { /* unreadable storage: start from the demo encounters */ }
+  const demos = DEMO_CASES.map((demo): [string, Stored] => [demo.encounterId, { encounterId: demo.encounterId, studentName: demo.studentName, patientName: demo.patientName, messages: demo.messages, comments: saved[demo.encounterId]?.comments ?? [] }]);
+  return { ...Object.fromEntries(Object.entries(saved).filter(([id]) => !DEMO.has(id))), ...Object.fromEntries(demos) };
 }
 function writeAll(all: Record<string, Stored>) {
   try { localStorage.setItem(KEY, JSON.stringify(all)); } catch { throw new Error("This browser could not save the comment."); }
 }
-const reportFor = (stored: Stored): FeedbackReport => ({ ...buildSampleReport(stored.encounterId, stored.messages), facultyComments: stored.comments });
+const reportFor = (stored: Stored): FeedbackReport => ({ ...(DEMO.get(stored.encounterId)?.report ?? buildSampleReport(stored.encounterId, stored.messages)), facultyComments: stored.comments });
 function entryFor(stored: Stored): ReviewEntry {
   const report = reportFor(stored);
   return { encounterId: stored.encounterId, studentId: sampleStudentId(stored.studentName), studentName: stored.studentName, patientName: stored.patientName, completedAt: report.generatedAt, messageCount: stored.messages.length, totalScore: report.totalScore, maxScore: report.maxScore, needsReview: report.reviewFlags.length > 0, commentCount: stored.comments.length };

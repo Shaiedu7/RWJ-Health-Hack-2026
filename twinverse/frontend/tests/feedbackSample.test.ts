@@ -35,3 +35,14 @@ test("the full sample report survives normalisation unchanged, and unusable payl
   assert.throws(() => normalizeReport({ sections: [{ name: "X", items: [{ itemId: "1", name: "Y", score: 4 }] }] }, SAMPLE_MESSAGES, "enc"), /expected 1, 2 or 3/);
   assert.equal(normalizeReport({ ...minimal, learningObjectives: [{ text: "Objective", met: true, evidenceTurns: [1] }] }, SAMPLE_MESSAGES, "enc").learningObjectives[0]?.outcome, "met");
 });
+import { DEMO_CASES } from "../src/feedback/demoCases.ts";
+test("each demo encounter scores all sixteen items, cites only its own student messages and survives normalisation", () => {
+  assert.deepEqual(DEMO_CASES.map(d => d.report.totalScore), [38, 19, 40]);
+  assert.deepEqual(DEMO_CASES.map(d => d.report.reviewFlags.length), [0, 2, 0]);
+  for (const demo of DEMO_CASES) {
+    assert.equal(demo.report.maxScore, 48);
+    const students = new Set(demo.messages.filter(m => m.role === "user").map(m => m.id));
+    for (const id of cited(demo.report)) assert.ok(students.has(id), id);
+    assert.deepEqual(normalizeReport(JSON.parse(JSON.stringify(demo.report)), demo.messages, demo.encounterId), demo.report);
+  }
+});

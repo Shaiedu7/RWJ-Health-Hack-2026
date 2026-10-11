@@ -49,11 +49,31 @@ export const SAMPLE_MESSAGES: TranscriptMessage[] = LINES.map((text, i) => ({
 
 const SCALE: Record<RubricScore, string> = { 3: "Exceeds expectations", 2: "Meets expectations", 1: "Below expectations" };
 
+/** Every level's wording, from backend/lib/encounter-rubric.json, so the sample shows the full rubric. */
+const LEVELS: Record<string, Record<RubricScore, string>> = {
+  "0.1": { 3: "Introduces self (name, role); greets warmly; makes small talk or asks how patient is feeling; establishes purpose and agenda; confirms patient's immediate concern", 2: "Brief introduction, moves quickly into questions without building rapport; establishes a workable focus but misses agenda or patient priorities", 1: "No introduction; jumps straight into questioning; begins abruptly or creates confusion" },
+  "1.1": { 3: "Asks 7+ of the 10 items", 2: "Asks 4–6 of the 10 items", 1: "Asks 0–3 of the 10 items" },
+  "1.2": { 3: "Asks about majority of case-specific symptoms (≥70%)", 2: "Asks about some (30–69%)", 1: "Asks about few or none (<30%)" },
+  "1.3": { 3: "Asks about 5–6 categories", 2: "Asks about 3–4 categories", 1: "Asks about 0–2 categories" },
+  "2.1": { 3: "Discusses 3+ appropriate differential diagnoses with the patient", 2: "Discusses 1–2 appropriate differentials", 1: "Does not discuss, or discusses incorrect diagnoses" },
+  "2.2": { 3: "Explains all expected next steps (labs, imaging, other tests)", 2: "Missing 1–2 key next steps", 1: "Does not discuss next steps" },
+  "2.3": { 3: "Explains appropriate treatment plan including side effects in patient-friendly language", 2: "Discusses treatment but components are not appropriate or first-line", 1: "Does not discuss treatment" },
+  "2.4": { 3: "Questions build on each other logically; the student's line of reasoning visibly converges toward the correct diagnosis; closing statements reflect what was gathered", 2: "Some evidence of narrowing, but with tangents or gaps in the logical chain; reaches a partial or incomplete conclusion", 1: "Questions feel random or disconnected; no visible narrowing; closing does not follow from what was gathered" },
+  "3.1": { 3: "Systematic interview — chief concern → HPI → medical history → social/family history → closing. Questions flow logically.", 2: "Mostly organized but a few questions out of order or jumping between topics", 1: "Interview completely out of sequence, difficult to follow thought process" },
+  "3.2": { 3: "Conversation flows well, no unnecessary repetition, builds on prior answers", 2: "Occasionally re-asks something already answered, or has 1–2 unfocused tangents", 1: "Frequently re-asks questions, goes in circles, fails to build on information provided" },
+  "4.1": { 3: "Acknowledges concerns; validates feelings; shows warmth; uses attentive, nonjudgmental, culturally responsive language; patient appears heard", 2: "Some empathetic responses but inconsistent, formulaic, rushed, or insufficiently attuned", 1: "No acknowledgment of emotions; dismissive, judgmental, or emotionally unsafe communication" },
+  "4.2": { 3: "Good mix of open-ended and focused follow-up questions; starts broad, narrows logically; questions are clinically accurate and relevant; uses appropriate sequencing", 2: "Mostly closed yes/no questions but some open-ended ones; questions generally relevant but may lack clinical precision", 1: "Almost entirely closed yes/no questions; feels like an interrogation; questions may be clinically inaccurate or irrelevant" },
+  "4.3": { 3: "Patient-friendly language; explains medical terms; professional tone; maintains boundaries; protects privacy; communicates limitations", 2: "Occasional unexplained jargon or slightly informal tone; mostly professional but some boundaries or limitations unclear", 1: "Excessive jargon; unprofessional; confusing language; breaches boundaries or overstates certainty" },
+  "4.4": { 3: "Approaches sensitive topics (substance use, mental health, sexual history) with appropriate framing and non-judgment (\"I ask all my patients about…\")", 2: "Asks about sensitive topics but bluntly or without framing", 1: "Avoids sensitive topics entirely or handles them inappropriately" },
+  "4.5": { 3: "Recognizes verbal cues, uncertainty, concerns, and changes in the patient's story; avoids interrupting; follows up on important information", 2: "Responds to obvious cues but overlooks subtler concerns or inconsistencies", 1: "Ignores, contradicts, or prematurely redirects important information" },
+  "4.6": { 3: "Identifies important findings; distinguishes relevant from irrelevant; recognizes red flags or uncertainty; reasoning is clinically coherent and appropriately cautious", 2: "Recognizes some key findings but misses connections, alternatives, or uncertainty", 1: "Reasoning is unsupported, unsafe, internally inconsistent, or absent when required" },
+};
+
 export function buildSampleReport(encounterId: string, messages: TranscriptMessage[]): FeedbackReport {
   const asked = messages.filter((m) => m.role === "user");
   /** IDs of the student's nth questions (0-based); positions past the end of the transcript are dropped. */
   const q = (...positions: number[]) => positions.flatMap((n) => (asked[n] ? [asked[n].id] : []));
-  const item = (itemId: string, name: string, prompt: string, score: RubricScore, descriptor: string, rationale: string, evidenceMessageIds: string[]): RubricItemResult => ({ itemId, name, prompt, score, descriptor, rationale, evidenceMessageIds });
+  const item = (itemId: string, name: string, prompt: string, score: RubricScore, descriptor: string, rationale: string, evidenceMessageIds: string[]): RubricItemResult => ({ itemId, name, prompt, score, descriptor, ...(LEVELS[itemId] ? { levels: LEVELS[itemId] } : {}), rationale, evidenceMessageIds });
 
   const sections = [
     { sectionId: "0", name: "Introduction", items: [

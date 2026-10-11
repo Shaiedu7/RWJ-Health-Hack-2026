@@ -21,6 +21,10 @@ All code is in `src/feedback/`:
 - `types.ts` is the shape the UI renders (the output of `normalize.ts`).
 - `sample.ts` is the sample transcript and report used until the backend is connected.
 
+## Backend status
+
+The two student routes are implemented in `backend/lib/encounter-feedback.ts`. Opening an encounter starts building the gold-standard guide (`backend/lib/encounter-guide.ts`, cached per published patient version). The feedback `POST` then grades the transcript against `backend/lib/encounter-rubric.json`. Both prompts are in `backend/lib/feedback-prompts.ts`. The faculty routes, including `GET /api/faculty/students` and `GET /api/faculty/students/:studentId` for the Students tab, are in `backend/lib/faculty-feedback.ts`. Faculty comments are stored apart from the AI report and shown to the student in their own section.
+
 ## Turning it on
 
 Create `twinverse/frontend/.env.local` containing `VITE_FEEDBACK_SOURCE=live` and restart the dev server. Without it, the UI uses sample data and never calls these routes. With it, the faculty page also starts requiring a faculty sign-in.

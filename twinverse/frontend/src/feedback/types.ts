@@ -13,6 +13,8 @@ export interface RubricItemResult {
   score: RubricScore;
   /** Rubric wording for the level the student reached. */
   descriptor: string;
+  /** Rubric wording for every level, when the backend sends it. */
+  levels?: Partial<Record<RubricScore, string>>;
   /** Why this score, in terms of this encounter. */
   rationale: string;
   evidenceMessageIds: string[];
@@ -75,14 +77,29 @@ export interface TranscriptMessage {
 /** One row in the faculty review list. */
 export interface ReviewEntry {
   encounterId: string;
+  studentId?: string;
   studentName: string;
   patientName: string;
   completedAt: string;
   messageCount: number;
   totalScore: number;
   maxScore: number;
+  /** Score weighted by patient difficulty, as a percentage. Faculty only. */
+  weightedPercent?: number;
   needsReview: boolean;
   commentCount: number;
+}
+/** One row in the faculty student list. */
+export interface StudentRow {
+  studentId: string;
+  studentName: string;
+  assessmentCount: number;
+  /** Mean of total ÷ maximum across the student's assessments, or null when none are scored. */
+  averagePercent: number | null;
+  averageScore: number | null;
+  maxScore: number;
+  lastCompletedAt: string;
+  needsReviewCount: number;
 }
 export interface ReviewDetail {
   entry: ReviewEntry;

@@ -377,6 +377,35 @@
             "items": {
               "type": "string"
             }
+          },
+          "case_specific_symptoms": {
+            "default": [],
+            "type": "array",
+            "title": "Case-Specific Associated Symptoms (rubric 1.2)",
+            "items": {
+              "type": "string"
+            }
+          },
+          "expected_workup": {
+            "default": [],
+            "type": "array",
+            "title": "Expected Workup / Next Steps (rubric 2.2)",
+            "items": {
+              "type": "string"
+            }
+          },
+          "expected_treatment": {
+            "default": [],
+            "type": "array",
+            "title": "Expected Treatment (rubric 2.3)",
+            "items": {
+              "type": "string"
+            }
+          },
+          "student_field_of_study": {
+            "default": "",
+            "type": "string",
+            "title": "Student Field Of Study"
           }
         },
         "title": "Learning",
@@ -935,7 +964,11 @@
       "competencies": [],
       "debrief_points": [],
       "expected_discoveries": [],
-      "possible_patient_reactions": []
+      "possible_patient_reactions": [],
+      "case_specific_symptoms": [],
+      "expected_workup": [],
+      "expected_treatment": [],
+      "student_field_of_study": ""
     },
     "metadata": {
       "tags": [],

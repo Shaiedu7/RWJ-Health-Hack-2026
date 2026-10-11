@@ -2,6 +2,7 @@ import { parseProfileText, exportProfile } from "./faculty-review.js";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { authenticatedStudent } from "./student-auth.js";
 import { generateFacultyProfile } from "./faculty-generation.js";
+import { facultyFeedbackRoute } from "./faculty-feedback.js";
 import {
   FacultyError,
   requireFaculty,
@@ -45,7 +46,8 @@ export async function facultyRoute(
       process.env["ENABLE_FACULTY_DEVELOPMENT"] !== "true"
     )
       throw new FacultyError(403, "Faculty development access is disabled.");
-    const facultyId = requireFaculty(await authenticatedStudent(req));
+    const identity = await authenticatedStudent(req);
+    const facultyId = requireFaculty(identity);
     if (!["GET", "POST", "PUT"].includes(req.method ?? ""))
       throw new FacultyError(405, "Method not supported.");
     if (
@@ -62,6 +64,16 @@ export async function facultyRoute(
     }
     if (path === "/schema" && req.method === "GET") {
       send(200, facultySchema);
+      return true;
+    }
+    const feedback = await facultyFeedbackRoute(
+      path,
+      req.method ?? "",
+      () => body(req),
+      identity?.email ?? "Instructor",
+    );
+    if (feedback !== undefined) {
+      send(200, feedback);
       return true;
     }
     const store = await facultyStore();

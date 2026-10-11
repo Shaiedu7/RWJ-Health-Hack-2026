@@ -42,7 +42,9 @@ export function normalizeReport(value: unknown, messages: TranscriptMessage[], e
       items: list(section.items).map((entry) => {
         const item = object(entry, "rubric item"), score = Number(item.score);
         if (score !== 1 && score !== 2 && score !== 3) fail(`item ${String(item.itemId)} has score ${String(item.score)}, expected 1, 2 or 3`);
-        return { itemId: String(item.itemId ?? fail("item id is missing")), name: required(item.name, "item name"), prompt: text(item.prompt), score: score as RubricScore, descriptor: text(item.descriptor), rationale: text(item.rationale), evidenceMessageIds: evidence(item) };
+        const raw = item.levels && typeof item.levels === "object" ? (item.levels as Raw) : null;
+        const levels = raw && Object.fromEntries(([3, 2, 1] as const).flatMap((s) => (typeof raw[s] === "string" ? [[s, raw[s] as string]] : [])));
+        return { itemId: String(item.itemId ?? fail("item id is missing")), name: required(item.name, "item name"), prompt: text(item.prompt), score: score as RubricScore, descriptor: text(item.descriptor), ...(levels && Object.keys(levels).length ? { levels } : {}), rationale: text(item.rationale), evidenceMessageIds: evidence(item) };
       }),
     };
   });

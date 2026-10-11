@@ -9,6 +9,8 @@ import { PatientLoadError } from "../lib/patient-loader.js";
 import { generatePreviewReply, PreviewReplyError } from "../lib/preview-conversation.js";
 import { loadPreviewContext, RICH_WYATT_ID } from "../lib/preview-context.js";
 import { createEncounterStore, EncounterError, openEncounter, publicEncounter, encounterSummary, sendTurn } from "../lib/student-encounters.js";
+import { ensureGuide } from "../lib/encounter-guide.js";
+import { defaultFeedbackDeps, feedbackStatus, requestFeedback } from "../lib/encounter-feedback.js";
 const enabled = process.env["ENABLE_STUDENT_DEVELOPMENT_PREVIEW"] === "true" && process.env["NODE_ENV"] !== "production";
 const store = createEncounterStore();
 async function body(req: IncomingMessage): Promise<unknown> {
@@ -34,7 +36,17 @@ const server = createServer(async (req, res) => {
       const input = await body(req) as { patientId?: unknown };
       if (!input || typeof input.patientId !== "string" || !(input.patientId===RICH_WYATT_ID || /^faculty-[0-9a-f-]{36}$/i.test(input.patientId))) throw new EncounterError(400, "Select an available patient.");
       const context = input.patientId===RICH_WYATT_ID ? await loadPreviewContext(input.patientId) : await loadPublishedContext(input.patientId);
-      return send(200, { encounter: publicEncounter(await openEncounter(store, student.sub, context)) });
+      const encounter = await openEncounter(store, student.sub, context);
+      // Build the gold-standard guide while the student talks; feedback waits for it if it is not ready.
+      ensureGuide(context).catch(error => console.error("Encounter guide generation failed:", error instanceof Error ? `${error.name}: ${error.message}` : "UnknownError"));
+      return send(200, { encounter: publicEncounter(encounter) });
+    }
+    const feedbackMatch = url.pathname.match(/^\/api\/encounters\/([0-9a-f-]{36})\/feedback$/i);
+    if (feedbackMatch && (req.method === "POST" || req.method === "GET")) {
+      if (req.method === "POST") await body(req);
+      const encounter = await store.get(student.sub, feedbackMatch[1] ?? "");
+      if (!encounter) throw new EncounterError(404, "Encounter unavailable for this student.");
+      return send(200, req.method === "POST" ? await requestFeedback(defaultFeedbackDeps(), student.sub, encounter, student.email) : await feedbackStatus(defaultFeedbackDeps(), student.sub, encounter));
     }
     const transcriptionMatch = url.pathname.match(/^\/api\/encounters\/([0-9a-f-]{36})\/transcription$/i);
     if (transcriptionMatch && req.method === "POST") {

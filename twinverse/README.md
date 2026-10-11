@@ -17,3 +17,7 @@ Backend: `npm run check`, `npm run lint`, `npm test`.
 The legacy CSV import tests require the challenge ZIP supplied separately. Its default path is defined in `backend/scripts/wyatt-draft.ts`; update that path for your machine. no challenge archive, deployed patient records, or student conversations are included in this repository. The Hugging Face importer similarly requires its separately downloaded source data. See backend documentation for importer parameters.
 
 No AWS resources are created by starting the local apps. Review infrastructure and permissions before deploying CDK stacks.
+
+## Teammate AWS credentials
+
+See [AWS setup without the CLI](aws/README.md). Placeholder files are in `aws/credentials.example` and `aws/config.example`; their filled-in copies belong in your personal `.aws` folder, outside this repository.

@@ -22,7 +22,7 @@ Open http://127.0.0.1:8443/ for students or http://127.0.0.1:8443/faculty.html f
 
 Text conversations and faculty generation/checking use the existing Bedrock model. Spoken replies and microphone transcription require server-side ElevenLabs configuration. See the backend documentation and `.env.server.example`; the dynamic secret reference must be resolved by `asm-exec`, not passed literally to ElevenLabs. Do not put real secrets in example files or frontend configuration.
 
-Wyatt remains an unapproved development preview. Faculty draft saving, JSON/YAML import, AI generation, consistency review and publishing are included. Ending a student session shows a processing screen; assessment/feedback processing is not implemented. JSON/YAML import maps data deterministically; it does not automatically invent missing fields with AI.
+Wyatt remains an unapproved development preview. Faculty draft saving, JSON/YAML import, AI generation, consistency review and publishing are included. Ending a student session opens the feedback report, and faculty review reports and add comments at http://127.0.0.1:8443/feedback/faculty. Feedback scoring is not implemented: both views show sample data and keep faculty comments in the browser until `VITE_FEEDBACK_SOURCE=live` is set (routes are listed in `frontend/src/feedback/feedbackApi.ts`). JSON/YAML import maps data deterministically; it does not automatically invent missing fields with AI.
 
 ## Repository branches
 

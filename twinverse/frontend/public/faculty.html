@@ -63,6 +63,7 @@ function App(){
  const fac=u.role==="faculty";
  const out=async()=>{const r=await fetch("/api/auth/logout",{method:"POST"});if(!r.ok){setAuthError("Sign out failed. Try again.");return}const result=await r.json();location.assign(result.logoutUrl)};
  return <><header><b>Patient Studio · Faculty</b><button className={v.n==="lib"?"on":""} onClick={()=>setV({n:"lib"})}>{fac?"Patient library":"Practice patients"}</button>{fac&&<button className={v.n==="new"?"on":""} onClick={()=>setV({n:"new"})}>New patient</button>}
+ {fac&&<a href="/feedback/faculty" style={{color:"#B9CDD1"}}>Student feedback</a>}
  <a href="/" style={{color:"#B9CDD1"}}>Student view</a><span style={{marginLeft:"auto",color:"#B9CDD1"}}>{u.name} ({u.role})</span><button onClick={out}>Sign out</button></header>
  <main>{v.n==="lib"&&<Library go={setV} fac={fac}/>}{v.n==="new"&&<Create go={setV}/>}{v.n==="edit"&&<Editor key={v.pid} pid={v.pid} go={setV}/>}</main></>;
 }

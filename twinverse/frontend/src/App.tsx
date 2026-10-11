@@ -62,7 +62,7 @@ export default function App() {
         if (selectedId) {
           const response = await api(`/api/encounters/${selectedId}${preview}`);
           const restored = parseEncounter(response.encounter);
-          if (!cancelled && response.encounter.endedAt) { setProcessing(true); if (response.encounter.feedback) setFeedback(readFeedback(response.encounter.feedback)); }
+          if (!cancelled && response.encounter.endedAt) { setProcessing(true); if (response.encounter.feedback) setFeedback(readFeedback(response.encounter.feedback)); else setFeedbackError("Your session is saved. Select Retry feedback to generate your assessment."); }
           if (!cancelled) { setPatient(restored.patient); setEncounter(restored); setRoom(true); }
         } else {
           const catalogue = await api(`/api/patients${preview}`);

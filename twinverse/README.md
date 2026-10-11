@@ -1,6 +1,6 @@
 # TwinVerse - combined student and faculty application
 
-This branch contains the current student encounter and Faculty Studio, sharing the TypeScript backend and existing AWS services. The older faculty project and challenge documents remain on main and the other preserved branches.
+`main` contains the current student encounter, Faculty Studio and AI rubric feedback, sharing the TypeScript backend and existing AWS services. Earlier work is preserved on the branches listed below.
 
 ## Run locally
 
@@ -28,10 +28,12 @@ AWS credentials are read only from the `twinverse-event` profile in `~/.aws/cred
 
 ## Repository branches
 
-- `main`: existing older faculty project and team documents.
-- `twinverse-student-experience`: older student implementation.
-- `twinverse-combined`: current integrated application (this branch).
-- `frontend`: preserved team frontend archive branch.
+- `main`: current integrated application (this branch), including AI rubric feedback.
+- `merge-ai-evaluation`: the merge of `final` and `ai-evaluation` that `main` was set to.
+- `final`: integrated application before the rubric feedback merge.
+- `ai-evaluation`: rubric feedback work, now merged into `main`.
+- `main-backup-before-override`: the previous `main`, including the hand-written demo encounters.
+- `encounter-feedback`, `twinverse-combined`, `twinverse-student-experience`, `frontend`: earlier preserved branches.
 
 ## Checks
 

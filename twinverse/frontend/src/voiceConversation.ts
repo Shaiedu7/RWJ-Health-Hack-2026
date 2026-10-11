@@ -1,3 +1,4 @@
+import { connectAvatarAudio } from "./avatarAudio.ts";
 export type VoiceState = "off" | "starting" | "listening" | "transcribing" | "thinking" | "speaking";
 export class SilenceDetector {
   started = 0; lastSpeech = 0; voicedFrames = 0;
@@ -54,8 +55,8 @@ export class VoiceConversation {
       this.state("transcribing"); const bytes = await this.turn(blob,this.controller.signal);
       if (!this.active || !this.context) return;
       const audio = await this.context.decodeAudioData(bytes); if (!this.active) return;
-      const source = this.context.createBufferSource(); this.source = source; source.buffer = audio; source.connect(this.context.destination);
-      source.onended = () => { source.disconnect(); if (this.active) this.listen(); };
+      const source = this.context.createBufferSource(); this.source = source; source.buffer = audio; const disconnectAvatar = connectAvatarAudio(source,this.context);
+      source.onended = () => { disconnectAvatar(); source.disconnect(); if (this.active) this.listen(); };
       this.state("speaking"); source.start();
     } catch (e) { if (this.active) this.fail(e instanceof Error ? e.message : "Voice unavailable. You can keep typing."); }
   }

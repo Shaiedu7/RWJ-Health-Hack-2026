@@ -31,5 +31,7 @@ test("feedback rejects invented exchange citations and unsupported strengths",()
  const e={messages:[{sequence:1,role:"user",text:"Hello"}]} as Encounter;
  const invalid={...result(),strengths:[{category:"Empathy",observation:"Student reassured the patient",suggestion:"Continue",messageSequences:[9]}]};
  assert.throws(()=>parseFeedback(JSON.stringify(invalid),e),/evidence/);
- const first=invalid.strengths[0];assert.ok(first);first.messageSequences=[];assert.throws(()=>parseFeedback(JSON.stringify(invalid),e),/Strength/);
+ const first=invalid.strengths[0];assert.ok(first);first.messageSequences=[];assert.throws(()=>parseFeedback(JSON.stringify(invalid),e),/student message evidence/);
+ e.messages.push({sequence:2,role:"assistant",text:"I feel tired"} as Encounter["messages"][number]);
+ first.messageSequences=[2];assert.throws(()=>parseFeedback(JSON.stringify(invalid),e),/student message evidence/);
 });

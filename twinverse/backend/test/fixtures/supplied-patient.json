@@ -1,0 +1,304 @@
+[
+  {
+    "patient_overview": {
+      "name": "Dominic Rivera",
+      "age": 22,
+      "sex": "Male",
+      "description": "A 22-year-old Puerto Rican male college student recovering from a gunshot wound trauma. He is a community volunteer and feels protective over his younger siblings. He has a history of Type 2 Diabetes (prediabetic history) but is now poorly controlled. He is skeptical of healthcare systems and authority figures, showing resistance to standard medical advice. He has limited health literacy and low motivation to adhere to strict dietary or medication regimens. He values his role in the community and is protective of his family, which can be a lever for motivation but also a source of stress.",
+      "keywords": [
+        "young adult male",
+        "poorly controlled type 2 diabetes",
+        "healthcare mistrust",
+        "cultural humility",
+        "nutrition education",
+        "resilient",
+        "community volunteer",
+        "low adherence",
+        "health literacy",
+        "trauma recovery"
+      ]
+    },
+    "demographics": {
+      "occupation": "Part-time community volunteer and student",
+      "residence": "Urban Latino neighborhood in Puerto Rico",
+      "ethnicity": "Puerto Rican",
+      "language": "Spanish (primary) and English (functional, but prefers Spanish)",
+      "marital_status": "Single",
+      "education_level": "In-college (associate degree seeking)",
+      "insurance": "Public health insurance",
+      "cultural_context": "Strong family ties, collectivist values, cultural foods include pork, rice, beans, plantains, coconut milk. Values 'cuidado' and respect for elders but struggles with 'authority' figures in healthcare. Trust issues stem from negative experiences during his trauma recovery."
+    },
+    "clinical_profile": {
+      "primary_diagnosis": "Poorly controlled Type 2 Diabetes Mellitus",
+      "secondary_diagnoses": [
+        "History of prediabetes (2 years)",
+        "Recent gunshot wound (recovering, 2 months ago)",
+        "Mild trauma-related stress"
+      ],
+      "medical_history": [
+        "Family history of Type 2 Diabetes (mother)",
+        "Recent emergency surgery for gunshot wound",
+        "History of weight fluctuation"
+      ],
+      "current_symptoms": [
+        "Frequent thirst and urination",
+        "Fatigue and low energy",
+        "Occasional cravings for sweet foods",
+        "Mild headache and blurred vision occasionally"
+      ],
+      "allergies": [
+        "No known allergies"
+      ],
+      "clinical_findings": [
+        "Recent HbA1c of 9.8% (target < 7.0%)",
+        "Elevated fasting blood glucose (180 mg/dL)",
+        "Slightly elevated lipid panel"
+      ],
+      "laboratory_data": [
+        "HbA1c: 9.8%",
+        "Fasting Glucose: 180 mg/dL",
+        "Total Cholesterol: 220 mg/dL"
+      ],
+      "vital_signs": [
+        "BP: 128/82 mmHg",
+        "HR: 78 bpm",
+        "Temp: 98.6°F",
+        "Respiratory Rate: 16 bpm"
+      ],
+      "anthropometrics": [
+        "Height: 5'9\"",
+        "Weight: 178 lbs",
+        "BMI: 27.8 (Overweight)",
+        "Recent weight gain: 5 lbs over 3 months"
+      ]
+    },
+    "medication_profile": {
+      "medications": [
+        {
+          "name": "Metformin",
+          "dose": "500 mg",
+          "frequency": "1 dose daily",
+          "purpose": "Improve insulin sensitivity and lower blood glucose",
+          "adherence": "Poor (takes it intermittently, sometimes forgets)",
+          "patient_concerns": "Experiences mild GI side effects; skeptical it will help; thinks diet alone can fix his sugar"
+        },
+        {
+          "name": "Lisinopril",
+          "dose": "10 mg",
+          "frequency": "1 dose daily",
+          "purpose": "Manage blood pressure",
+          "adherence": "Fair (takes it consistently if reminded)",
+          "patient_concerns": "None significant"
+        }
+      ],
+      "supplements_and_otc": [
+        "Vitamin C (occasional)",
+        "Coiflory root tea (as requested by his mother)"
+      ]
+    },
+    "nutrition_profile": {
+      "dietary_pattern": "Mediterranean-Latino, but high in refined carbs and processed meats",
+      "food_preferences": [
+        "Rice and beans",
+        "Plantains",
+        "Pork",
+        "Coconut milk dishes",
+        "Sweet treats like 'quesillos'"
+      ],
+      "foods_or_behaviors_to_explore": [
+        "Snacking habits late at night",
+        "Preference for sugary drinks (Jus de Piña)",
+        "Cooking frequency (often relies on pre-made foods due to trauma recovery)"
+      ],
+      "meal_pattern": "Irregular meals; often skips breakfast, eats lunch at work, dinners with family",
+      "hydration": "High intake of sugary fruit juices and sodas; low water intake",
+      "physical_activity": "Low to moderate (walking for community work, no structured exercise)",
+      "substance_use": "Non-smoker; no alcohol",
+      "sleep": "Poor sleep quality due to stress and PTSD symptoms"
+    },
+    "psychosocial_profile": {
+      "personality": "Resilient and pragmatic, but skeptical of authority. He values independence and self-reliance, but feels frustrated by limitations imposed by his diagnosis and recovery. He is protective of his younger siblings and sees them as his motivation to be healthy, though he masks this vulnerability.",
+      "communication_style": "Direct and occasionally blunt. He uses slang and may interrupt if he feels unheard. He prefers Spanish and may switch to English if the topic becomes clinical. He shows defensiveness when criticized but opens up when he feels respected.",
+      "goals": [
+        "To regain independence and return to work",
+        "To lower his sugar levels so he can play with his siblings",
+        "To avoid hospital readmission"
+      ],
+      "concerns": [
+        "Fear of losing his job as a volunteer",
+        "Concern about side effects of medication",
+        "Fear of becoming a burden to his family"
+      ],
+      "beliefs": [
+        "Sugar is not the only cause of diabetes",
+        "Healthcare professionals don't understand his culture",
+        "Diet is just about eating 'good' foods"
+      ],
+      "motivations": [
+        "Protecting his siblings",
+        "Resuming his volunteer work",
+        "Financial stability (wants to work and earn money)"
+      ],
+      "fears": [
+        "Dependency on family",
+        "Further health complications",
+        "Returning to hospital"
+      ],
+      "barriers": [
+        "Limited health literacy",
+        "Inconsistent work hours",
+        "Food deserts in his neighborhood",
+        "Mistrust of medical advice",
+        "Stress and trauma symptoms"
+      ],
+      "strengths": [
+        "Community support network",
+        "Resilience and adaptability",
+        "Strong family bond",
+        "Willingness to try if it feels practical"
+      ],
+      "support_system": "Younger siblings and parents; neighbors who support him in community service",
+      "readiness_to_change": "Ambivalent; willing to try small changes but needs to see immediate benefits and feel trusted by his care team."
+    },
+    "information_disclosure": {
+      "initial_information": [
+        "He mentions feeling tired and thirsty often",
+        "He mentions skipping medication sometimes",
+        "He mentions eating rice and beans most of the time",
+        "He mentions his recent injury",
+        "He mentions his sister is sick"
+      ],
+      "discoverable_information": [
+        "He reveals he only takes his meds when he has a good day",
+        "He admits he likes juice over water",
+        "He mentions he works irregular hours",
+        "He shares he trusts his mother's advice more than doctors'",
+        "He mentions he skips breakfast to save money on lunch"
+      ],
+      "reluctant_information": [
+        "He initially hides that he skips breakfast to avoid cost",
+        "He hesitates to mention his trauma-related stress affects his eating",
+        "He hides his desire to be more active but feels too weak",
+        "He initially downplays the fear of being a burden to his family"
+      ],
+      "hidden_information": [
+        "He has a history of eating disorders related to body image and family dynamics",
+        "He is struggling with PTSD symptoms that affect his sleep and eating",
+        "He has been using supplements to lower blood sugar but knows they are not proven",
+        "He has a strong cultural belief that he should be the provider for his family",
+        "He is financially strained and cannot afford healthy food consistently"
+      ]
+    },
+    "learning_opportunities": {
+      "opportunities": [
+        {
+          "learning_objective": "Apply the Nutrition Care Process",
+          "expected_discoveries": [
+            "Patient's dietary history",
+            "Lifestyle factors affecting glucose levels",
+            "Social barriers to nutrition care",
+            "Motivation and readiness to change"
+          ],
+          "possible_patient_reactions": [
+            "Defensiveness if the student starts diagnosing without listening",
+            "Reluctance to discuss food without being asked respectfully",
+            "Engagement when discussing family or community support"
+          ]
+        },
+        {
+          "learning_objective": "Develop an appropriate PES statement",
+          "expected_discoveries": [
+            "Problem: High HbA1c",
+            "Evaluation: Patient's beliefs and barriers",
+            "Strategy: Culturally sensitive meal planning"
+          ],
+          "possible_patient_reactions": [
+            "Skepticism if the PES is generic",
+            "Engagement if the PES addresses his specific barriers (e.g., food cost)",
+            "Disinterest if the strategy feels impractical"
+          ]
+        },
+        {
+          "learning_objective": "Develop evidence-based nutrition interventions",
+          "expected_discoveries": [
+            "Patient's specific needs (e.g., hydration, fiber)",
+            "Patient's preferences (e.g., Puerto Rican foods)",
+            "Patient's readiness to change"
+          ],
+          "possible_patient_reactions": [
+            "Openness to try new recipes if they are familiar",
+            "Resistance to 'Western' diet advice",
+            "Engagement when discussing family meals"
+          ]
+        },
+        {
+          "learning_objective": "Integrate medication management with nutrition care",
+          "expected_discoveries": [
+            "Patient's adherence issues",
+            "Side effects related to food",
+            "Timing of meds with meals"
+          ],
+          "possible_patient_reactions": [
+            "Defensiveness if reprimanded for non-adherence",
+            "Reluctance to discuss meds without permission",
+            "Engagement if the student addresses side effects empathetically"
+          ]
+        },
+        {
+          "learning_objective": "Use motivational interviewing",
+          "expected_discoveries": [
+            "Patient's ambivalence",
+            "His goals and values",
+            "His fears and barriers"
+          ],
+          "possible_patient_reactions": [
+            "Resistance if the student is too directive",
+            "Engagement if the student uses open-ended questions",
+            "Skepticism if the student doesn't validate his experiences"
+          ]
+        },
+        {
+          "learning_objective": "Address lifestyle and behavioral barriers",
+          "expected_discoveries": [
+            "Patient's work schedule",
+            "Food access issues",
+            "Cultural influences on food choices"
+          ],
+          "possible_patient_reactions": [
+            "Defensiveness if barriers are blamed on the patient",
+            "Engagement if the student offers practical solutions",
+            "Reluctance to discuss sensitive barriers (e.g., financial) without trust"
+          ]
+        },
+        {
+          "learning_objective": "Consider interprofessional and community resources",
+          "expected_discoveries": [
+            "Patient's community connections",
+            "Patient's trust in local resources",
+            "Patient's need for mental health support"
+          ],
+          "possible_patient_reactions": [
+            "Skepticism of institutional resources",
+            "Engagement if the student involves family or community leaders",
+            "Openness to discuss mental health if framed as strength"
+          ]
+        }
+      ]
+    },
+    "metadata": {
+      "assumptions": [
+        "Patient has limited English proficiency but uses functional English",
+        "Patient's trauma history affects his mental health and sleep",
+        "Patient's family dynamics are supportive but not actively involved in his care",
+        "Patient's financial status is strained but stable enough to access care"
+      ],
+      "optional_details": [
+        "He has a pet dog that he cares for and walks",
+        "He attends a community meeting weekly to discuss local issues",
+        "He has a history of eating disorders related to body image",
+        "He has been using supplements to lower his blood sugar",
+        "He has a strong belief that he should be the provider for his family"
+      ]
+    }
+  }
+]

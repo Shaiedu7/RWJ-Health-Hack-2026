@@ -1,0 +1,950 @@
+{
+  "schema": {
+    "$defs": {
+      "Allergy": {
+        "properties": {
+          "substance": {
+            "default": "",
+            "title": "Substance",
+            "type": "string"
+          },
+          "reaction": {
+            "default": "",
+            "title": "Reaction",
+            "type": "string"
+          }
+        },
+        "title": "Allergy",
+        "type": "object",
+        "additionalProperties": false
+      },
+      "Artifact": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "lab",
+            "title": "Kind",
+            "type": "string"
+          },
+          "file_url": {
+            "default": "",
+            "title": "File Url",
+            "type": "string"
+          },
+          "findings": {
+            "default": "",
+            "title": "Findings",
+            "type": "string"
+          },
+          "trigger": {
+            "$ref": "#/$defs/Trigger",
+            "default": {
+              "type": "start",
+              "value": ""
+            }
+          }
+        },
+        "title": "Artifact",
+        "type": "object",
+        "additionalProperties": false
+      },
+      "Clinical": {
+        "properties": {
+          "hpi": {
+            "default": "",
+            "title": "Hpi",
+            "type": "string"
+          },
+          "pmh": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Pmh",
+            "type": "array"
+          },
+          "surgical_history": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Surgical History",
+            "type": "array"
+          },
+          "family_history": {
+            "default": "",
+            "title": "Family History",
+            "type": "string"
+          },
+          "review_of_systems": {
+            "default": "",
+            "title": "Review Of Systems",
+            "type": "string"
+          },
+          "allergies": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/Allergy"
+            },
+            "title": "Allergies",
+            "type": "array"
+          },
+          "vitals": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/Item"
+            },
+            "title": "Vitals",
+            "type": "array"
+          },
+          "exam": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/Item"
+            },
+            "title": "Exam",
+            "type": "array"
+          },
+          "hidden_diagnosis": {
+            "default": "",
+            "title": "Hidden Diagnosis",
+            "type": "string"
+          },
+          "differentials": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Differentials",
+            "type": "array"
+          },
+          "primary_diagnosis": {
+            "type": "string",
+            "title": "Primary Diagnosis"
+          },
+          "allergy_status": {
+            "type": "string",
+            "title": "Allergy Status"
+          },
+          "secondary_diagnoses": {
+            "type": "array",
+            "title": "Secondary Diagnoses",
+            "items": {
+              "type": "string"
+            }
+          },
+          "laboratory_data": {
+            "type": "array",
+            "title": "Laboratory Data",
+            "items": {
+              "$ref": "#/$defs/Item"
+            }
+          },
+          "clinical_findings": {
+            "type": "array",
+            "title": "Clinical Findings",
+            "items": {
+              "$ref": "#/$defs/Item"
+            }
+          },
+          "anthropometrics": {
+            "type": "array",
+            "title": "Anthropometrics",
+            "items": {
+              "$ref": "#/$defs/Item"
+            }
+          }
+        },
+        "title": "Clinical",
+        "type": "object",
+        "additionalProperties": false
+      },
+      "Demographics": {
+        "properties": {
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "age": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Age"
+          },
+          "sex": {
+            "default": "",
+            "title": "Sex",
+            "type": "string"
+          },
+          "gender_identity": {
+            "default": "",
+            "title": "Gender Identity",
+            "type": "string"
+          },
+          "ethnicity": {
+            "default": "",
+            "title": "Ethnicity",
+            "type": "string"
+          },
+          "primary_language": {
+            "default": "English",
+            "title": "Primary Language",
+            "type": "string"
+          },
+          "occupation": {
+            "default": "",
+            "title": "Occupation",
+            "type": "string"
+          },
+          "education": {
+            "default": "",
+            "title": "Education",
+            "type": "string"
+          },
+          "living_situation": {
+            "default": "",
+            "title": "Living Situation",
+            "type": "string"
+          },
+          "marital_status": {
+            "default": "",
+            "title": "Marital Status",
+            "type": "string"
+          },
+          "insurance": {
+            "type": "string",
+            "title": "Insurance"
+          },
+          "cultural_context": {
+            "type": "string",
+            "title": "Cultural Context"
+          }
+        },
+        "title": "Demographics",
+        "type": "object",
+        "additionalProperties": false
+      },
+      "InformationDisclosure": {
+        "properties": {
+          "opening_statement": {
+            "default": "",
+            "title": "Opening Statement",
+            "type": "string"
+          },
+          "rules": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/Rule"
+            },
+            "title": "Rules",
+            "type": "array"
+          },
+          "hidden_concerns": {
+            "default": "",
+            "title": "Hidden Concerns",
+            "type": "string"
+          },
+          "initial_information": {
+            "type": "array",
+            "title": "Initial Information",
+            "items": {
+              "type": "string"
+            }
+          },
+          "discoverable_information": {
+            "type": "array",
+            "title": "Discoverable Information",
+            "items": {
+              "type": "string"
+            }
+          },
+          "reluctant_information": {
+            "type": "array",
+            "title": "Reluctant Information",
+            "items": {
+              "type": "string"
+            }
+          },
+          "hidden_information": {
+            "type": "array",
+            "title": "Hidden Information",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "title": "InformationDisclosure",
+        "type": "object",
+        "additionalProperties": false
+      },
+      "Item": {
+        "properties": {
+          "id": {
+            "default": "",
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "default": "",
+            "title": "Label",
+            "type": "string"
+          },
+          "value": {
+            "default": "",
+            "title": "Value",
+            "type": "string"
+          },
+          "trigger": {
+            "$ref": "#/$defs/Trigger",
+            "default": {
+              "type": "start",
+              "value": ""
+            }
+          }
+        },
+        "title": "Item",
+        "type": "object",
+        "additionalProperties": false
+      },
+      "Learning": {
+        "properties": {
+          "objectives": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Objectives",
+            "type": "array"
+          },
+          "key_questions_to_ask": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Key Questions To Ask",
+            "type": "array"
+          },
+          "common_pitfalls": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Common Pitfalls",
+            "type": "array"
+          },
+          "competencies": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Competencies",
+            "type": "array"
+          },
+          "debrief_points": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Debrief Points",
+            "type": "array"
+          },
+          "expected_discoveries": {
+            "type": "array",
+            "title": "Expected Discoveries",
+            "items": {
+              "type": "string"
+            }
+          },
+          "possible_patient_reactions": {
+            "type": "array",
+            "title": "Possible Patient Reactions",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "title": "Learning",
+        "type": "object",
+        "additionalProperties": false
+      },
+      "Med": {
+        "properties": {
+          "name": {
+            "default": "",
+            "title": "Name",
+            "type": "string"
+          },
+          "dose": {
+            "default": "",
+            "title": "Dose",
+            "type": "string"
+          },
+          "frequency": {
+            "default": "",
+            "title": "Frequency",
+            "type": "string"
+          },
+          "indication": {
+            "default": "",
+            "title": "Indication",
+            "type": "string"
+          },
+          "adherence": {
+            "type": "string",
+            "title": "Adherence"
+          },
+          "patient_concerns": {
+            "type": "string",
+            "title": "Patient Concerns"
+          }
+        },
+        "title": "Med",
+        "type": "object",
+        "additionalProperties": false
+      },
+      "Medications": {
+        "properties": {
+          "current": {
+            "default": [],
+            "items": {
+              "$ref": "#/$defs/Med"
+            },
+            "title": "Current",
+            "type": "array"
+          },
+          "adherence": {
+            "default": "",
+            "title": "Adherence",
+            "type": "string"
+          },
+          "otc_and_supplements": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Otc And Supplements",
+            "type": "array"
+          },
+          "past_medications": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Past Medications",
+            "type": "array"
+          }
+        },
+        "title": "Medications",
+        "type": "object",
+        "additionalProperties": false
+      },
+      "Metadata": {
+        "properties": {
+          "tags": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Tags",
+            "type": "array"
+          },
+          "estimated_minutes": {
+            "default": 15,
+            "title": "Estimated Minutes",
+            "type": "integer"
+          },
+          "created_by": {
+            "default": "",
+            "title": "Created By",
+            "type": "string"
+          },
+          "references": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "References",
+            "type": "array"
+          },
+          "notes": {
+            "default": "",
+            "title": "Notes",
+            "type": "string"
+          }
+        },
+        "title": "Metadata",
+        "type": "object",
+        "additionalProperties": false
+      },
+      "Nutrition": {
+        "properties": {
+          "diet_pattern": {
+            "default": "",
+            "title": "Diet Pattern",
+            "type": "string"
+          },
+          "typical_daily_intake": {
+            "default": "",
+            "title": "Typical Daily Intake",
+            "type": "string"
+          },
+          "appetite": {
+            "default": "",
+            "title": "Appetite",
+            "type": "string"
+          },
+          "weight_kg": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Weight Kg"
+          },
+          "height_cm": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Height Cm"
+          },
+          "alcohol": {
+            "default": "",
+            "title": "Alcohol",
+            "type": "string"
+          },
+          "caffeine": {
+            "default": "",
+            "title": "Caffeine",
+            "type": "string"
+          },
+          "food_allergies_intolerances": {
+            "default": [],
+            "items": {
+              "type": "string"
+            },
+            "title": "Food Allergies Intolerances",
+            "type": "array"
+          },
+          "food_preferences": {
+            "type": "array",
+            "title": "Food Preferences",
+            "items": {
+              "type": "string"
+            }
+          },
+          "foods_or_behaviors_to_explore": {
+            "type": "array",
+            "title": "Foods Or Behaviors To Explore",
+            "items": {
+              "type": "string"
+            }
+          },
+          "meal_pattern": {
+            "type": "string",
+            "title": "Meal Pattern"
+          },
+          "hydration": {
+            "type": "string",
+            "title": "Hydration"
+          },
+          "physical_activity": {
+            "type": "string",
+            "title": "Physical Activity"
+          },
+          "sleep": {
+            "type": "string",
+            "title": "Sleep"
+          }
+        },
+        "title": "Nutrition",
+        "type": "object",
+        "additionalProperties": false
+      },
+      "Overview": {
+        "properties": {
+          "title": {
+            "default": "",
+            "title": "Title",
+            "type": "string"
+          },
+          "case_summary": {
+            "default": "",
+            "title": "Case Summary",
+            "type": "string"
+          },
+          "chief_complaint": {
+            "default": "",
+            "title": "Chief Complaint",
+            "type": "string"
+          },
+          "specialty": {
+            "default": "",
+            "title": "Specialty",
+            "type": "string"
+          },
+          "care_setting": {
+            "default": "",
+            "title": "Care Setting",
+            "type": "string"
+          },
+          "difficulty": {
+            "default": "intermediate",
+            "enum": ["beginner", "intermediate", "advanced"],
+            "title": "Difficulty",
+            "type": "string"
+          }
+        },
+        "title": "Overview",
+        "type": "object",
+        "additionalProperties": false
+      },
+      "Psychosocial": {
+        "properties": {
+          "personality": {
+            "default": "",
+            "title": "Personality",
+            "type": "string"
+          },
+          "communication_style": {
+            "default": "",
+            "title": "Communication Style",
+            "type": "string"
+          },
+          "health_literacy": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": ["low", "moderate", "high"]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Health Literacy"
+          },
+          "mood_and_emotional_state": {
+            "default": "",
+            "title": "Mood And Emotional State",
+            "type": "string"
+          },
+          "support_system": {
+            "default": "",
+            "title": "Support System",
+            "type": "string"
+          },
+          "tobacco_and_substance_use": {
+            "default": "",
+            "title": "Tobacco And Substance Use",
+            "type": "string"
+          },
+          "stressors": {
+            "default": "",
+            "title": "Stressors",
+            "type": "string"
+          },
+          "beliefs_and_values": {
+            "default": "",
+            "title": "Beliefs And Values",
+            "type": "string"
+          },
+          "goals": {
+            "type": "array",
+            "title": "Goals",
+            "items": {
+              "type": "string"
+            }
+          },
+          "concerns": {
+            "type": "array",
+            "title": "Concerns",
+            "items": {
+              "type": "string"
+            }
+          },
+          "beliefs": {
+            "type": "array",
+            "title": "Beliefs",
+            "items": {
+              "type": "string"
+            }
+          },
+          "motivations": {
+            "type": "array",
+            "title": "Motivations",
+            "items": {
+              "type": "string"
+            }
+          },
+          "fears": {
+            "type": "array",
+            "title": "Fears",
+            "items": {
+              "type": "string"
+            }
+          },
+          "barriers": {
+            "type": "array",
+            "title": "Barriers",
+            "items": {
+              "type": "string"
+            }
+          },
+          "strengths": {
+            "type": "array",
+            "title": "Strengths",
+            "items": {
+              "type": "string"
+            }
+          },
+          "readiness_to_change": {
+            "type": "string",
+            "title": "Readiness To Change"
+          }
+        },
+        "title": "Psychosocial",
+        "type": "object",
+        "additionalProperties": false
+      },
+      "Rule": {
+        "properties": {
+          "fact": {
+            "default": "",
+            "title": "Fact",
+            "type": "string"
+          },
+          "mode": {
+            "default": "if_asked",
+            "enum": ["volunteer", "if_asked", "only_if_probed"],
+            "title": "Mode",
+            "type": "string"
+          }
+        },
+        "title": "Rule",
+        "type": "object",
+        "additionalProperties": false
+      },
+      "Trigger": {
+        "properties": {
+          "type": {
+            "default": "start",
+            "enum": [
+              "start",
+              "topic_asked",
+              "exam_requested",
+              "after_turns",
+              "custom_intent"
+            ],
+            "title": "Type",
+            "type": "string"
+          },
+          "value": {
+            "default": "",
+            "title": "Value",
+            "type": "string"
+          }
+        },
+        "title": "Trigger",
+        "type": "object",
+        "additionalProperties": false
+      }
+    },
+    "properties": {
+      "overview": {
+        "$ref": "#/$defs/Overview",
+        "title": "Patient overview"
+      },
+      "demographics": {
+        "$ref": "#/$defs/Demographics"
+      },
+      "clinical": {
+        "$ref": "#/$defs/Clinical",
+        "title": "Clinical profile"
+      },
+      "medications": {
+        "$ref": "#/$defs/Medications",
+        "title": "Medication profile"
+      },
+      "nutrition": {
+        "$ref": "#/$defs/Nutrition",
+        "title": "Nutrition profile"
+      },
+      "psychosocial": {
+        "$ref": "#/$defs/Psychosocial",
+        "title": "Psychosocial profile"
+      },
+      "disclosure": {
+        "$ref": "#/$defs/InformationDisclosure",
+        "title": "Information disclosure"
+      },
+      "learning": {
+        "$ref": "#/$defs/Learning",
+        "title": "Learning profile"
+      },
+      "metadata": {
+        "$ref": "#/$defs/Metadata"
+      },
+      "artifacts": {
+        "default": [],
+        "items": {
+          "$ref": "#/$defs/Artifact"
+        },
+        "title": "Artifacts",
+        "type": "array"
+      },
+      "knowledge": {
+        "default": [],
+        "items": {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        "title": "Knowledge",
+        "type": "array"
+      },
+      "_verified": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    },
+    "title": "PatientProfile",
+    "type": "object",
+    "additionalProperties": false
+  },
+  "blank": {
+    "overview": {
+      "title": "",
+      "case_summary": "",
+      "chief_complaint": "",
+      "specialty": "",
+      "care_setting": "",
+      "difficulty": "intermediate"
+    },
+    "demographics": {
+      "name": "",
+      "age": null,
+      "sex": "",
+      "gender_identity": "",
+      "ethnicity": "",
+      "primary_language": "",
+      "occupation": "",
+      "education": "",
+      "living_situation": "",
+      "marital_status": "",
+      "insurance": "",
+      "cultural_context": ""
+    },
+    "clinical": {
+      "hpi": "",
+      "pmh": [],
+      "surgical_history": [],
+      "family_history": "",
+      "review_of_systems": "",
+      "allergies": [],
+      "vitals": [],
+      "exam": [],
+      "hidden_diagnosis": "",
+      "differentials": [],
+      "primary_diagnosis": "",
+      "allergy_status": "",
+      "secondary_diagnoses": [],
+      "laboratory_data": [],
+      "clinical_findings": [],
+      "anthropometrics": []
+    },
+    "medications": {
+      "current": [],
+      "adherence": "",
+      "otc_and_supplements": [],
+      "past_medications": []
+    },
+    "nutrition": {
+      "diet_pattern": "",
+      "typical_daily_intake": "",
+      "appetite": "",
+      "weight_kg": null,
+      "height_cm": null,
+      "alcohol": "",
+      "caffeine": "",
+      "food_allergies_intolerances": [],
+      "food_preferences": [],
+      "foods_or_behaviors_to_explore": [],
+      "meal_pattern": "",
+      "hydration": "",
+      "physical_activity": "",
+      "sleep": ""
+    },
+    "psychosocial": {
+      "personality": "",
+      "communication_style": "",
+      "health_literacy": null,
+      "mood_and_emotional_state": "",
+      "support_system": "",
+      "tobacco_and_substance_use": "",
+      "stressors": "",
+      "beliefs_and_values": "",
+      "goals": [],
+      "concerns": [],
+      "beliefs": [],
+      "motivations": [],
+      "fears": [],
+      "barriers": [],
+      "strengths": [],
+      "readiness_to_change": ""
+    },
+    "disclosure": {
+      "opening_statement": "",
+      "rules": [],
+      "hidden_concerns": "",
+      "initial_information": [],
+      "discoverable_information": [],
+      "reluctant_information": [],
+      "hidden_information": []
+    },
+    "learning": {
+      "objectives": [],
+      "key_questions_to_ask": [],
+      "common_pitfalls": [],
+      "competencies": [],
+      "debrief_points": [],
+      "expected_discoveries": [],
+      "possible_patient_reactions": []
+    },
+    "metadata": {
+      "tags": [],
+      "estimated_minutes": 15,
+      "created_by": "",
+      "references": [],
+      "notes": ""
+    },
+    "artifacts": [],
+    "knowledge": []
+  }
+}

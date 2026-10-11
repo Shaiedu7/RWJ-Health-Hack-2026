@@ -1,0 +1,8 @@
+# Local AWS credentials must never be committed.
+.aws/
+**/credentials
+**/credentials.local
+.env
+.env.*
+!.env.server.example
+!*.example

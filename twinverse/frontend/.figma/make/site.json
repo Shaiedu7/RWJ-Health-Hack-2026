@@ -1,0 +1,10 @@
+{
+  "description": "Engage in realistic medical interviews with a virtual patient, enhancing healthcare education through interactive dialogue and dynamic patient responses.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

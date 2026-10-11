@@ -1,0 +1,148 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Patient Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@500;600&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.24.7/babel.min.js"></script>
+<style>
+:root{--bg:#EDF1F2;--s:#fff;--ink:#14262B;--mut:#5B6E73;--line:#D3DCDE;--acc:#0E6F73;--crit:#B3261E;--warn:#9A5B00;--ok:#1F7A3E}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Public Sans",sans-serif}
+h1,h2,h3{font-family:Newsreader,serif;font-weight:600;margin:0}h1{font-size:30px}h2{font-size:22px}
+header{background:var(--ink);color:#fff;display:flex;align-items:center;gap:24px;padding:12px 28px}header b{font:600 20px Newsreader,serif;margin-right:auto}
+header button{background:none;border:0;color:#B9CDD1;font:inherit;cursor:pointer;padding:6px 2px;border-bottom:2px solid transparent}header button.on{color:#fff;border-color:#5fd0d0}
+main{max-width:1080px;margin:28px auto;padding:0 20px}.card{background:var(--s);border:1px solid var(--line);border-radius:6px;padding:20px;margin-bottom:16px}
+button,select,input,textarea{font:inherit;color:inherit}button{cursor:pointer;border:1px solid var(--acc);background:var(--acc);color:#fff;border-radius:6px;padding:7px 14px}
+button.ghost{background:none;color:var(--acc)}button.x{background:none;border-color:transparent;color:var(--crit);padding:4px 8px}button:disabled{opacity:.55;cursor:not-allowed}
+input,select,textarea{border:1px solid var(--line);border-radius:6px;padding:7px 9px;background:#fff;width:100%}:focus-visible{outline:2px solid var(--acc);outline-offset:1px}
+textarea{resize:vertical}.f{display:block;margin-bottom:14px}.f>span{display:flex;gap:8px;align-items:center;color:var(--mut);font-size:13px;margin-bottom:4px}
+.row{display:flex;gap:8px;margin-bottom:8px;align-items:flex-start;flex-wrap:wrap}.row>input{flex:1 1 140px}.trig{display:flex;gap:6px;flex:2 1 280px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.badge{font-size:11px;padding:1px 8px;border-radius:10px;border:1px solid}.ai{color:var(--warn);border-color:var(--warn)}.ok,.published{color:var(--ok);border-color:var(--ok)}
+.draft{color:var(--mut);border-color:var(--mut)}.archived{color:var(--mut);border-color:var(--line)}.critical{color:var(--crit);border-color:var(--crit)}.warning{color:var(--warn);border-color:var(--warn)}
+table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:middle}th{color:var(--mut);font-weight:500;font-size:13px}
+.sec{border:1px solid var(--line);border-radius:6px;padding:0 16px;margin-bottom:12px}.sec summary{cursor:pointer;padding:12px 0;font:600 19px Newsreader,serif}.sec>div{padding:4px 0 8px}
+.tabs{flex-wrap:wrap;display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:18px}.tabs button{background:none;border:0;border-bottom:2px solid transparent;border-radius:0;color:var(--mut)}.tabs button.on{color:var(--ink);border-color:var(--acc)}
+.err{color:var(--crit);margin:8px 0}.issue{border-left:3px solid var(--crit);padding:8px 12px;margin-bottom:10px;background:#fbf6f5}.issue.warning{border-color:var(--warn);background:#fcf9f2}.issue.dismissed{opacity:1;background:#f4f6f6;border-color:#7b8c8f;color:#52636a}
+.review-summary{padding:14px 16px;border:1px solid #c7dada;border-radius:8px;background:#edf6f5;margin:16px 0;color:#24484a}.review-summary.blocked{background:#fff1ef;border-color:#e9b6ad;color:#862e20}.review-actions{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}.review-counts{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.review-counts span{padding:4px 10px;border-radius:20px;background:#fff;border:1px solid var(--line);font-size:13px}.review-issue{border-left-width:4px;border-radius:6px;padding:16px 18px;margin:12px 0;line-height:1.6}.review-issue h3{font-family:inherit;font-size:16px;margin:10px 0;color:var(--ink)}.issue-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:#52636a;font-size:13px}.issue-fix{padding:10px 12px;background:#ffffffb8;border-radius:5px;color:#344b55;margin:10px 0}.review-issue .badge{font-size:12px;font-weight:600}.review-issue textarea{min-height:74px}.review-confirm{display:flex;gap:10px;align-items:flex-start;border-top:1px solid var(--line);padding-top:18px;margin-top:20px}.review-confirm input{width:auto;margin-top:5px}.release-options{margin:12px 0}.release-options summary{cursor:pointer;color:var(--acc)}
+.enc{display:grid;grid-template-columns:3fr 2fr;gap:16px}@media(max-width:760px){.enc{grid-template-columns:1fr}}
+.chat{height:420px;overflow:auto;display:flex;flex-direction:column;gap:8px;margin-bottom:12px}.m{max-width:80%;padding:8px 12px;border-radius:6px;background:#E4ECEE}.m.student{align-self:flex-end;background:var(--acc);color:#fff}
+.item{border:1px solid var(--line);border-radius:6px;padding:8px 10px;margin-bottom:8px}.item.new{animation:pop 1.6s ease-out}@keyframes pop{from{background:#c8ecec;transform:scale(1.03)}}
+@media(prefers-reduced-motion:reduce){.item.new{animation:none}}.item img{max-width:100%;border-radius:4px;margin-top:6px}.muted{color:var(--mut)}
+</style></head><body><div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect,useRef}=React;
+const api=async(p,{json,form,method}={})=>{
+ const controller=new AbortController();
+ const timeout=setTimeout(()=>controller.abort(),p==="/patients/generate"||p.endsWith("/check")?90000:20000);
+ try{
+  const r=await fetch("/api/faculty"+p,{signal:controller.signal,method:method||(json||form?"POST":"GET"),headers:{...(json?{"Content-Type":"application/json"}:{}),},body:json?JSON.stringify(json):form});
+  if(r.status===401)throw "Sign in with Cognito.";
+  const j=await r.json().catch(()=>{throw new Error("The server returned an unreadable response. Please retry.")});
+  if(!r.ok)throw new Error(typeof j.detail==="string"?j.detail:JSON.stringify(j.detail||j));
+  return j;
+ }catch(e){
+  if(controller.signal.aborted)throw new Error("The request took too long. Check the patient library before retrying; a save or publication may have completed.");
+  throw e;
+ }finally{clearTimeout(timeout)}
+};
+const TRIG={start:"Available at start",topic_asked:"After student asks about…",exam_requested:"After student requests exam/test…",after_turns:"After N turns",custom_intent:"Custom intent…"};
+const SAMPLE="58-year-old male bus driver with 2 hours of crushing chest pressure radiating to his left arm, sweaty and nauseated. Hypertensive, smokes a pack a day but downplays it. Allergic to penicillin. Anxious, minimizes symptoms. Inferior STEMI is the hidden diagnosis; include amoxicillin on his med list by mistake.";
+const mkItem=()=>({id:crypto.randomUUID().slice(0,8),label:"",value:"",trigger:{type:"start"}});
+
+const Trig=({t,on})=>{const trigger=t||{type:"",value:""};return <span className="trig"><select aria-label="Release trigger" value={trigger.type||""} onChange={e=>on({...trigger,type:e.target.value})}>{!trigger.type&&<option value="">Not specified</option>}{Object.entries(TRIG).map(([k,v])=><option key={k} value={k}>{v}</option>)}</select>{trigger.type&&trigger.type!=="start"&&<input aria-label="Trigger value" placeholder={trigger.type==="after_turns"?"5":"e.g. cardiac history, 12-lead ECG"} value={trigger.value||""} onChange={e=>on({...trigger,value:e.target.value})}/>}</span>};
+const St=({s})=><span className={"badge "+s}>{s}</span>;
+
+function Login({error}){
+ return <div className="card" style={{maxWidth:480,margin:"60px auto"}}><h1>Faculty Patient Studio</h1><p className="muted">Sign in with your invited faculty demo account.</p>{error&&<p className="err" role="alert">{error}</p>}<a href="/api/auth/login?destination=faculty"><button>Sign in with Cognito</button></a><p><a href="/">Go to Student</a></p></div>;
+}
+function App(){
+ const [v,setV]=useState({n:"lib"}),[u,setU]=useState(undefined),[authError,setAuthError]=useState("");
+ useEffect(()=>{api("/auth/me").then(setU).catch(e=>{setAuthError(String(e)==="Sign in with Cognito."?"":String(e));setU(null)})},[]);
+ if(u===undefined)return <p className="muted" style={{padding:28}}>Loading…</p>;
+ if(!u)return <main><Login error={authError}/></main>;
+ const fac=u.role==="faculty";
+ const out=async()=>{const r=await fetch("/api/auth/logout",{method:"POST"});if(!r.ok){setAuthError("Sign out failed. Try again.");return}const result=await r.json();location.assign(result.logoutUrl)};
+ return <><header><b>Patient Studio · Faculty</b><button className={v.n==="lib"?"on":""} onClick={()=>setV({n:"lib"})}>{fac?"Patient library":"Practice patients"}</button>{fac&&<button className={v.n==="new"?"on":""} onClick={()=>setV({n:"new"})}>New patient</button>}
+ <a href="/" style={{color:"#B9CDD1"}}>Student view</a><span style={{marginLeft:"auto",color:"#B9CDD1"}}>{u.name} ({u.role})</span><button onClick={out}>Sign out</button></header>
+ <main>{v.n==="lib"&&<Library go={setV} fac={fac}/>}{v.n==="new"&&<Create go={setV}/>}{v.n==="edit"&&<Editor key={v.pid} pid={v.pid} go={setV}/>}</main></>;
+}
+
+function Library({go,fac}){
+ const [rows,setRows]=useState(null),[error,setError]=useState("");const load=()=>{setError("");api("/patients").then(setRows).catch(e=>setError(String(e)))};useEffect(()=>{load()},[]);
+ const act=async(pid,a)=>{await api(`/patients/${pid}/${a}`,{method:"POST"});load()};
+ if(error)return <div className="card" role="alert"><p className="err">{error}</p><button onClick={load}>Retry</button></div>;
+ if(!rows)return <p className="muted">Loading…</p>;
+ if(!rows.length)return <div className="card"><h2>No patients yet</h2>{fac?<><p className="muted">Create a patient draft and fill in the profile.</p><button onClick={()=>go({n:"new"})}>Create a patient</button></>:<p className="muted">Your faculty have not published any patients yet. Check back soon.</p>}</div>;
+ return <div className="card"><h2 style={{marginBottom:12}}>Patient library</h2><table><thead><tr><th>Patient</th><th>Status</th><th>Tags</th><th></th></tr></thead><tbody>
+ {rows.map(r=><tr key={r.pid}><td><b>{r.name}</b> <span className="muted">v{r.ver}</span><div className="muted">{r.complaint}</div></td><td><St s={r.status}/></td>
+ <td>{[...r.tags,r.difficulty].join(", ")}</td><td style={{textAlign:"right",whiteSpace:"nowrap"}}>
+ {fac&&<><button className="ghost" onClick={()=>go({n:"edit",pid:r.pid})}>Open</button></>}
+ {r.live&&<> <a href="/">Student view</a></>}</td></tr>)}</tbody></table></div>;
+}
+
+function Create({go}){
+ const [d,setD]=useState(""),[mode,setMode]=useState("FICTIONAL"),[busy,setBusy]=useState(false),[error,setError]=useState(""),[format,setFormat]=useState("json"),[source,setSource]=useState("");
+ const importProfile=async()=>{setBusy(true);setError("");try{const r=await api("/patients/import",{json:{text:source,format}});go({n:"edit",pid:r.pid})}catch(e){setError(String(e));setBusy(false)}};
+ const create=async(blank=false)=>{setBusy(true);setError("");try{const r=await api(blank?"/patients":"/patients/generate",{json:blank?{}:{description:d,generationMode:mode},method:"POST"});go({n:"edit",pid:r.pid})}catch(e){setError(String(e));setBusy(false)}};
+ return <div className="card"><h2>New patient</h2><p className="muted">Describe your case and AI will fill the patient profile for you to review and edit.</p><label className="f"><span>Drafting mode</span><select value={mode} disabled={busy} onChange={e=>setMode(e.target.value)}><option value="FICTIONAL">Fictional teaching case — AI can propose missing details</option><option value="SUPPLIED">Supplied details — leave missing patient facts blank</option></select></label><label className="f"><span>Patient description</span><textarea rows={7} value={d} disabled={busy} onChange={e=>setD(e.target.value)} placeholder="For example: Create a fictional 58-year-old bus driver with chest pain. Include clinical history, medications, nutrition, psychosocial background and teaching objectives."/></label><div className="row"><button disabled={busy||!d.trim()} onClick={()=>create(false)}>{busy?"Working…":"Generate patient profile"}</button><button className="ghost" disabled={busy} onClick={()=>create(true)}>Start with a blank form</button></div>{busy&&<p className="muted" role="status">Preparing your draft. The form opens once it is saved; AI generation can take up to a minute.</p>}<hr/><h3>Import JSON / YAML</h3><p className="muted">Import one patient as an object or a one-patient list. Supports the patient_overview / clinical_profile format and the form schema. Imported profiles stay private drafts; chart release settings need review.</p><div className="row"><select aria-label="Import format" value={format} onChange={e=>setFormat(e.target.value)}><option value="json">JSON</option><option value="yaml">YAML</option></select><input aria-label="Profile file" type="file" accept=".json,.yaml,.yml" disabled={busy} onChange={async e=>{const file=e.target.files[0];if(!file)return;if(file.size>120000){setError("Profile must be under 120 KB.");return}setFormat(/\.ya?ml$/i.test(file.name)?"yaml":"json");setSource(await file.text())}}/></div><textarea aria-label="Structured patient profile" rows={8} value={source} onChange={e=>setSource(e.target.value)} style={{fontFamily:"monospace"}}/><button disabled={busy||!source.trim()} onClick={importProfile}>Import patient draft</button>{error&&<p className="err" role="alert">{error}</p>}</div>;
+}
+
+function Editor({pid,go}){
+ const reviewPanel=useRef(null);
+ const [d,setD]=useState(null),[sch,setSch]=useState(null),[error,setError]=useState(""),[busy,setBusy]=useState(false),[dirty,setDirty]=useState(false),[issues,setIssues]=useState(null),[checked,setChecked]=useState(null),[confirmed,setConfirmed]=useState(false),[format,setFormat]=useState(null),[source,setSource]=useState(""),[textDirty,setTextDirty]=useState(false),[reviewReason,setReviewReason]=useState({});
+ useEffect(()=>{Promise.all([api("/patients/"+pid),api("/schema")]).then(([draft,schema])=>{setD(draft);setSch(schema)}).catch(e=>setError(String(e)))},[pid]);
+ if(!d||!sch)return error?<div className="card" role="alert"><p className="err">{error}</p><button onClick={()=>go({n:"lib"})}>Back to library</button></div>:<p className="muted">Loading draft…</p>;
+ const invalidate=()=>{setIssues(null);setChecked(null);setConfirmed(false)};
+ const saveDraft=async()=>{let profile=d.profile;if(textDirty)profile=(await api("/profiles/parse",{json:{text:source,format}})).profile;if(!dirty&&!textDirty)return d;const next=await api("/patients/"+pid,{method:"PUT",json:{profile,revision:d.ver}});setD(next);setDirty(false);setTextDirty(false);invalidate();return next};
+ const run=fn=>async()=>{setBusy(true);setError("");try{await fn()}catch(e){setError(String(e))}finally{setBusy(false)}};
+ const check=run(async()=>{invalidate();const current=await saveDraft();const result=await api(`/patients/${pid}/check`,{json:{revision:current.ver}});setIssues(result.issues);setChecked(current.ver);setConfirmed(false);requestAnimationFrame(()=>reviewPanel.current?.scrollIntoView({behavior:"smooth",block:"start"}))});
+ const publish=run(async()=>{setD(await api(`/patients/${pid}/publish`,{json:{revision:d.ver,confirmed}}));setError("")});
+ const structured=fmt=>run(async()=>{if(textDirty)throw "Save or apply your text changes before changing formats.";const result=await api("/profiles/serialize",{json:{profile:d.profile,format:fmt}});setFormat(fmt);setSource(result.text)})();
+ const download=run(async()=>{const result=await api("/profiles/serialize",{json:{profile:textDirty?(await api("/profiles/parse",{json:{text:source,format}})).profile:d.profile,format:format||"json"}});const url=URL.createObjectURL(new Blob([result.text],{type:"text/plain"}));const a=document.createElement("a");a.href=url;a.download=`patient-${pid}.${format||"json"}`;a.click();URL.revokeObjectURL(url)});
+ const distinctIssues=(issues||[]).filter((i,index)=>issues.findIndex(x=>x.path===i.path&&x.message===i.message&&x.severity===i.severity)===index);
+ const publishReason=d.status==="published"?"This revision is published.":busy?"A request is in progress…":dirty||textDirty?"Save and check your changes before publishing.":checked!==d.ver||!issues?"First select Run consistency check. Publishing is waiting for your review.":issues.some(i=>i.severity==="critical"&&i.status!=="dismissed")?"Publication blocked: fix the required items below, then check again.":!confirmed?"Checks complete. Review the profile and tick the approval checkbox to publish.":"Ready to publish.";
+ const defaults=()=>{const p=JSON.parse(JSON.stringify(d.profile));p.clinical.vitals=p.clinical.vitals.map(i=>({...i,trigger:{type:"start",value:""}}));p.clinical.exam=p.clinical.exam.map(i=>({...i,trigger:{type:"exam_requested",value:"physical exam"}}));setD({...d,profile:p});setDirty(true);setFormat(null);invalidate()};
+ return <><div className="row" style={{alignItems:"center"}}><h1>{d.profile.demographics.name||d.profile.overview.title||"Untitled patient"}</h1><St s={d.status}/><span className="muted">Revision {d.ver}</span><button style={{marginLeft:"auto"}} disabled={busy||(!dirty&&!textDirty)} onClick={run(saveDraft)}>{busy?"Working…":dirty||textDirty?"Save changes":"Saved"}</button></div><p className="muted">{d.publishedVersionId?"A fixed published version is available to students. New edits stay drafts until you check and publish again.":"This private draft is not available to students yet."}</p>{error&&<p className="err" role="alert">{error}</p>}
+ <label className="f"><span>Replace form from JSON / YAML</span><input aria-label="Replace draft from profile file" type="file" accept=".json,.yaml,.yml" disabled={busy} onChange={e=>{const file=e.target.files[0];if(!file)return;run(async()=>{if(file.size>120000)throw "Profile must be under 120 KB.";const result=await api("/profiles/parse",{json:{text:await file.text(),format:/\.ya?ml$/i.test(file.name)?"yaml":"json"}});setD({...d,profile:result.profile});setDirty(true);setTextDirty(false);setFormat(null);invalidate()})()}}/><small className="muted">Loads the file into this draft for review. Select Save changes to keep the replacement. Any published version stays unchanged.</small></label>
+ <div className="row"><button className="ghost" disabled={busy||textDirty} onClick={()=>setFormat(null)}>Form</button><button className="ghost" disabled={busy||textDirty} onClick={()=>structured("json")}>JSON</button><button className="ghost" disabled={busy||textDirty} onClick={()=>structured("yaml")}>YAML</button><button className="ghost" disabled={busy} onClick={download}>Download {format||"JSON"}</button></div>
+ <div className="card"><fieldset disabled={busy} style={{border:0,padding:0,margin:0}}>{format?<><label className="f"><span>{format.toUpperCase()} patient profile</span><textarea rows={22} style={{fontFamily:"monospace"}} value={source} onChange={e=>{setSource(e.target.value);setTextDirty(true);invalidate()}}/></label><p className="muted">Save changes validates this text and updates the same draft.</p></>:<Profile p={d.profile} schema={sch} setP={p=>{setD({...d,profile:p});setDirty(true);invalidate()}}/>}</fieldset></div>
+ <section ref={reviewPanel} className="card" aria-label="Consistency review"><h2>Consistency review &amp; publishing</h2><p className="muted">Review the findings below before making this case available to students.</p>
+ <div className={"review-summary "+(issues?.some(i=>i.severity==="critical"&&i.status!=="dismissed")?"blocked":"")} role="status"><strong>{publishReason}</strong>{issues&&<div className="review-counts"><span>{distinctIssues.filter(i=>i.severity==="critical"&&i.status!=="dismissed").length} blocking issues</span><span>{distinctIssues.filter(i=>i.severity==="warning"&&i.status!=="dismissed").length} warnings</span><span>{distinctIssues.filter(i=>i.status==="dismissed").length} dismissed</span></div>}<div style={{fontSize:13,marginTop:6}}>Warnings allow publishing. Findings without release settings stay hidden from students.</div></div>
+ <div className="review-actions"><button disabled={busy} onClick={check}>{busy?"Review in progress…":"Run consistency check"}</button><button disabled={busy||d.status==="published"||!confirmed||checked!==d.ver||dirty||textDirty||!issues||issues.some(i=>i.severity==="critical"&&i.status!=="dismissed")} onClick={publish}>{d.status==="published"?"Published":"Approve & publish"}</button></div>
+ <details className="release-options"><summary>Chart release settings</summary><p className="muted">Suggested settings show vitals at the start and physical exam findings after an exam request. Labs and other findings keep their own settings.</p><button className="ghost" disabled={busy||textDirty} onClick={defaults}>Set suggested release settings</button></details>
+ {issues&&<div aria-label="Consistency findings">{issues.map((i,index)=>({i,index})).filter(({i,index})=>issues.findIndex(x=>x.path===i.path&&x.message===i.message&&x.severity===i.severity)===index).sort((a,b)=>((a.i.status==="dismissed"?2:a.i.severity==="critical"?0:1)-(b.i.status==="dismissed"?2:b.i.severity==="critical"?0:1))).map(({i,index})=><article key={index} className={"issue review-issue "+(i.status==="dismissed"?"dismissed":i.severity)}><div className="issue-meta"><span className={"badge "+(i.status==="dismissed"?"draft":i.severity)}>{i.status==="dismissed"?"Dismissed":i.severity==="critical"?"Critical · blocks publishing":"Warning · review"}</span><span>{i.path}</span><span>· {i.source==="ai"?"AI audit":"Fixed rule"}</span></div><h3>{i.message}</h3>{i.fix&&<div className="issue-fix"><strong>Suggested fix</strong><div>{i.fix}</div></div>}{i.status==="dismissed"?<div className="issue-fix"><strong>Faculty review recorded</strong><div>{i.dismissalReason}</div></div>:i.source==="ai"?<><label className="f"><span>Reason for dismissal</span><textarea aria-label={"Dismissal reason for "+i.path} value={reviewReason[index]||""} onChange={e=>setReviewReason({...reviewReason,[index]:e.target.value})} placeholder="Explain why this finding is not an issue in this case." disabled={busy}/></label><button className="ghost" disabled={busy||!reviewReason[index]?.trim()} onClick={run(async()=>{const result=await api(`/patients/${pid}/issues/${index}/dismiss`,{json:{revision:d.ver,reason:reviewReason[index]}});setIssues(result.issues);setConfirmed(false);setReviewReason({})})}>Dismiss as not an issue</button></>:i.severity==="critical"?<p className="muted">Correct this field in the form, then run the check again.</p>:null}</article>)}</div>}
+ <label className="review-confirm"><input type="checkbox" checked={confirmed} disabled={busy||checked!==d.ver||dirty||textDirty||!issues||issues.some(i=>i.severity==="critical"&&i.status!=="dismissed")} onChange={e=>setConfirmed(e.target.checked)}/><span>I reviewed the complete patient profile, clinical facts and release settings, and approve this revision for the teaching simulation.</span></label><p className="muted" style={{fontSize:12}}>Fixed checks and AI audits can miss issues or flag false positives. Faculty review is required.</p></section></>;
+
+}
+
+const LONG=/summary|hpi|history|review|intake|concerns|notes|stressors|support|beliefs|mood|statement|personality|style|adherence|diet|reaction|indication/;
+function Profile({p,setP,schema}){
+ const defs=schema.$defs||{},ver=p._verified||[];
+ const deref=s0=>{const s=s0.allOf?s0.allOf[0]:s0.anyOf?s0.anyOf.find(x=>x.type!=="null"):s0;const d=s.$ref?defs[s.$ref.split("/").pop()]:s;return {...d,title:s0.title||s.title||d.title}};
+ const blank=s0=>{const s=deref(s0);if(s.properties)return Object.fromEntries(Object.entries(s.properties).map(([k,v])=>[k,k==="id"?crypto.randomUUID().slice(0,8):k==="trigger"?{type:"start",value:""}:blank(v)]));
+  return s.type==="array"?[]:s.enum?s.enum[0]:s.type==="string"?"":s0.anyOf?null:0};
+ const setAt=(path,val)=>{const n=JSON.parse(JSON.stringify(p));let o=n;path.slice(0,-1).forEach(k=>o=o[k]);o[path[path.length-1]]=val;
+  n._verified=[...new Set([...(n._verified||[]),path.slice(0,2).join(".")])];setP(n)};
+ const Field=(k,s0,v,path)=>{
+  const s=deref(s0),lab=(s.title||k).replace(/_/g," "),id=path.slice(0,2).join("."),on=ver.includes(id);
+  const wrap=body=><div className="f" key={path.join(".")}><span>{lab}{path.length===2&&<span className={"badge "+(on?"ok":"ai")}>{on?"Edited":"Not reviewed"}</span>}</span>{body}</div>;
+  const sel=(o,val,fn,key)=><select key={key} value={val??""} onChange={e=>fn(e.target.value===""?null:e.target.value)}>{val==null&&<option value="">Not supplied</option>}{o.map(x=><option key={x} value={x}>{x.replace(/_/g," ")}</option>)}</select>;
+  if(s.enum)return wrap(sel(s.enum,v,x=>setAt(path,x)));
+  if(s.type==="integer"||s.type==="number")return wrap(<input type="number" value={v??""} onChange={e=>setAt(path,e.target.value===""?null:+e.target.value)}/>);
+  if(s.type==="string")return wrap(LONG.test(k)?<textarea rows={4} value={v||""} onChange={e=>setAt(path,e.target.value)}/>:<input value={v||""} onChange={e=>setAt(path,e.target.value)}/>);
+  if(s.type==="array"){const it=deref(s.items);
+   if(it.type==="string")return wrap(<textarea rows={3} placeholder="One per line" value={(v||[]).join("\n")} onChange={e=>setAt(path,e.target.value.split("\n"))}/>);
+   return wrap(<>{(v||[]).map((row,r)=><div className="row" key={r}>
+    {Object.entries(it.properties).filter(([f])=>f!=="id"&&f!=="trigger").map(([f,fs])=>{const d=deref(fs);
+     return d.enum?sel(d.enum,row[f],x=>setAt([...path,r,f],x),f):<input key={f} aria-label={f} placeholder={f.replace(/_/g," ")} value={row[f]??""} onChange={e=>setAt([...path,r,f],d.type==="string"?e.target.value:+e.target.value)}/>})}
+    {it.properties.trigger&&<Trig t={row.trigger} on={t=>setAt([...path,r,"trigger"],t)}/>}
+    <button className="x" onClick={()=>setAt(path,v.filter((_,j)=>j!==r))}>Remove</button></div>)}
+    <button className="ghost" onClick={()=>setAt(path,[...(v||[]),blank(s.items)])}>Add</button></>);}
+  return null};
+ return Object.entries(schema.properties).filter(([k])=>k!=="artifacts"&&k!=="knowledge"&&k!=="_verified").map(([sec,ss])=>{const s=deref(ss);
+  return <details key={sec} className="sec" open={sec==="overview"}><summary>{s.title||sec}</summary>
+   <div className={sec==="demographics"?"grid":""}>{Object.entries(s.properties).map(([k,fs])=>Field(k,fs,(p[sec]||{})[k],[sec,k]))}</div></details>});
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>);
+</script></body></html>

@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { validateUpload,validateFileBindings,type PatientFile } from "../lib/patient-files.js";
+import { validateUpload,validateFileBindings,fileDisposition,type PatientFile } from "../lib/patient-files.js";
 import { studioContext,releasedFindings,publishedTurnContext } from "../lib/published-context.js";
 import { publicEncounter,type Encounter } from "../lib/student-encounters.js";
 import { blankFacultyProfile } from "../lib/faculty-patients.js";
@@ -12,6 +12,11 @@ test("uploads reject spoofed content and cross-patient file references",()=>{
  const file={id:"x",object_key:"faculty/a/patients/p/id",content_type:"application/pdf"} as PatientFile;
  assert.throws(()=>validateFileBindings({artifacts:[file]},"b","p",{artifacts:[file]}),/authenticated upload/);
  validateFileBindings({artifacts:[file]},"a","p",{artifacts:[file]});
+});
+test("PDF originals download while images remain viewable and filenames cannot inject headers",()=>{
+ assert.equal(fileDisposition("application/pdf","report.pdf"),'attachment; filename="report.pdf"');
+ assert.equal(fileDisposition("image/png","report.png"),'inline; filename="report.png"');
+ assert.doesNotMatch(fileDisposition("application/pdf",'bad"\r\nX-Test: bad.pdf'),/[\r\n]/);
 });
 test("unreleased report bytes and text stay private, released report is bound to encounter",()=>{
  const p=blankFacultyProfile(),id="e97b0810-00c7-44cd-a218-a9458716af27";
@@ -29,4 +34,16 @@ test("unreleased report bytes and text stay private, released report is bound to
 test("extracted file text needs faculty review before publishing",()=>{
  const p=blankFacultyProfile();p["artifacts"]=[{id:"x",title:"Report",findings:"source text",reviewed:false}];
  assert.ok(reviewProfile(p).some(i=>i.path==="artifacts"&&i.severity==="critical"));
+});
+test("only reviewed patient records ground conversation and knowledge remains private in student DTOs",()=>{
+ const p=blankFacultyProfile();
+ p["knowledge"]=[
+  {id:"reviewed",title:"Record",text:"Favorite hobby is watercolor painting",purpose:"patient_record",reviewed:true},
+  {id:"unreviewed",title:"Draft",text:"UNREVIEWED_FACT",purpose:"patient_record",reviewed:false},
+  {id:"reference",title:"Teaching",text:"PRIVATE_TEACHING_REFERENCE",purpose:"teaching_reference",reviewed:true},
+ ];
+ const c=studioContext("faculty-test","v1",p),facts=JSON.stringify(publishedTurnContext(c,[],"What is your hobby?").patientInformation);
+ assert.match(facts,/watercolor painting/);assert.doesNotMatch(facts,/UNREVIEWED_FACT|PRIVATE_TEACHING_REFERENCE/);
+ const e={encounterId:"e",patientId:"faculty-test",context:c,revision:0,messages:[],requests:{},updatedAt:"now",version:0,mode:"published"} as Encounter;
+ assert.doesNotMatch(JSON.stringify(publicEncounter(e)),/watercolor painting|UNREVIEWED_FACT|PRIVATE_TEACHING_REFERENCE/);
 });

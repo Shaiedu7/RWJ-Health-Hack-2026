@@ -1,4 +1,4 @@
-import { readPatientFile } from "../lib/patient-files.js";
+import { readPatientFile, fileDisposition } from "../lib/patient-files.js";
 import { releasedFindings } from "../lib/published-context.js";
 import { finishEncounter } from "../lib/encounter-feedback.js";
 import { loadPublishedContext } from '../lib/published-context.js';
@@ -47,7 +47,7 @@ const server = createServer(async (req, res) => {
       const owned=await store.get(student.sub,documentMatch[1]??"");
       const item=owned?.context?.artifacts?.find(f=>f.id===documentMatch[2]);
       if(!owned?.context || !item || !releasedFindings(owned.context,owned.messages).some(f=>f.group===`artifact:${item.id}`))throw new EncounterError(404,"Report unavailable for this encounter.");
-      const file=await readPatientFile(item);res.setHeader("Content-Type",file.type);res.setHeader("Content-Disposition",`inline; filename="${file.filename.replace(/["\r\n]/g,"_")}"`);res.setHeader("Content-Security-Policy","sandbox");res.end(file.bytes);return;
+      const file=await readPatientFile(item);res.setHeader("Content-Type",file.type);res.setHeader("Content-Disposition",fileDisposition(file.type,file.filename));res.setHeader("Content-Security-Policy","sandbox");res.end(file.bytes);return;
     }
     const transcriptionMatch = url.pathname.match(/^\/api\/encounters\/([0-9a-f-]{36})\/transcription$/i);
     if (transcriptionMatch && req.method === "POST") {

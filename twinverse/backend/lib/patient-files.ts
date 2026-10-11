@@ -7,6 +7,9 @@ import { MODEL_ID } from "./preview-conversation.js";
 import { FacultyError, type FacultyStore } from "./faculty-patients.js";
 export const FILE_BUCKET = `twinverse-event-files-${ACCOUNT}-${REGION}`;
 export const MAX_FILE_BYTES = 2_000_000;
+export function fileDisposition(type: string, filename: string) {
+  return `${type === "application/pdf" ? "attachment" : "inline"}; filename="${filename.replace(/["\r\n]/g,"_")}"`;
+}
 export type PatientFile = { id: string; object_key: string; filename: string; content_type: string; title: string; findings?: string; text?: string; reviewed: boolean; trigger?: { type: string; value?: string } };
 const credentials = fromNodeProviderChain({ profile: "twinverse-event" });
 const s3 = new S3Client({ region: REGION, credentials, maxAttempts: 2 });

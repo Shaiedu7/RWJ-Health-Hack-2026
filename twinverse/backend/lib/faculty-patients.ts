@@ -1,3 +1,4 @@
+import { validateFileBindings, type PatientFile } from "./patient-files.js";
 import {
   dismissAuditIssue,
   checkDraft,
@@ -58,6 +59,8 @@ function valid(value: unknown, spec: Schema): boolean {
   if (Array.isArray(spec["enum"]) && !spec["enum"].includes(value))
     return false;
   switch (spec["type"]) {
+    case "boolean":
+      return typeof value === "boolean";
     case "null":
       return value === null;
     case "string":
@@ -109,15 +112,6 @@ export function validateFacultyProfile(value: unknown): ObjectValue {
     throw new FacultyError(422, "Age must be blank or between 0 and 110.");
   if (Buffer.byteLength(JSON.stringify(profile)) > 120_000)
     throw new FacultyError(413, "Patient profile is too large.");
-  // Files require private object storage and are not supported by this draft-only integration.
-  if (
-    (profile["artifacts"] as unknown[]).length ||
-    (profile["knowledge"] as unknown[]).length
-  )
-    throw new FacultyError(
-      422,
-      "File attachments are not connected yet. Create a profile without files.",
-    );
   return profile;
 }
 export interface FacultyStore {
@@ -144,6 +138,7 @@ export interface FacultyStore {
     profile: unknown,
     id?: string,
     revision?: number,
+    uploaded?: PatientFile,
   ): Promise<ObjectValue>;
 }
 export function draftItems(
@@ -390,7 +385,7 @@ export function createFacultyStore(doc: DynamoDBDocumentClient): FacultyStore {
         createdAt: head["createdAt"],
       };
     },
-    async save(owner, value, id, revision) {
+    async save(owner, value, id, revision, uploaded) {
       const profile = validateFacultyProfile(value);
       const current = id ? await store.get(owner, id) : undefined;
       if (
@@ -403,6 +398,7 @@ export function createFacultyStore(doc: DynamoDBDocumentClient): FacultyStore {
         );
       const patientId = id ?? `faculty-${randomUUID()}`,
         next = current ? Number(current["ver"]) + 1 : 1;
+      validateFileBindings(profile, owner, patientId, uploaded ? {artifacts: [...((current?.["profile"] as ObjectValue)?.["artifacts"] as PatientFile[] ?? []), uploaded], knowledge: (current?.["profile"] as ObjectValue)?.["knowledge"] ?? []} : current?.["profile"] as ObjectValue | undefined);
       const items = draftItems(
         owner,
         profile,

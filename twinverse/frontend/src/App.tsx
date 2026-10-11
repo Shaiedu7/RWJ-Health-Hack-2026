@@ -48,7 +48,7 @@ export default function App() {
     void fetch("/api/auth/session", { signal: controller.signal, cache: "no-store" }).then(async response => {
       if (response.status === 401) return;
       if (!response.ok) throw new Error("Login service unavailable.");
-      const session = await response.json(); if (!controller.signal.aborted) setSignedIn(session.signedIn === true);
+      const session = await response.json(); if (session.role === "faculty") {window.location.replace("/faculty.html"); return;} if (!controller.signal.aborted) setSignedIn(session.signedIn === true);
     }).catch(error => { if (!controller.signal.aborted) report(error); }).finally(() => { if (!controller.signal.aborted) setCheckingLogin(false); });
     return () => controller.abort();
   }, []);
@@ -130,7 +130,7 @@ export default function App() {
   async function reviewSession() {
     if (!encounter || reviewing) return;
     setReviewing(true); setFeedbackError("");
-    try { const result = await api(`/api/encounters/${encounter.encounterId}/finish${preview}`, { method: "POST" }); setFeedback(readFeedback(result.feedback)); }
+    try { const result = await api(`/api/encounters/${encounter.encounterId}/finish${preview}`, { method: "POST", signal: AbortSignal.timeout(95000) }); setFeedback(readFeedback(result.feedback)); }
     catch (error) { setFeedbackError(error instanceof Error ? error.message : "Feedback unavailable. Your conversation is saved."); }
     finally { setReviewing(false); }
   }
@@ -185,7 +185,7 @@ export default function App() {
         {(sending || encounter.busy) && <p className="my-3" role="status">The patient is replying…</p>}
         {!encounter.readOnly && <form className="mt-5" onSubmit={event => { event.preventDefault(); void send(); }}><label htmlFor="message" className="font-semibold">Talk to {encounter.patient.fields.name}</label><textarea id="message" value={text} onChange={event => setText(event.target.value)} maxLength={2000} disabled={sending || encounter.busy || voiceState !== "off"} placeholder="Type your question…" className="mt-2 w-full rounded border p-3" /><button type="submit" disabled={sending || encounter.busy || voiceState !== "off" || !text.trim()} className="mt-2 rounded-lg bg-teal text-white px-5 py-3 disabled:opacity-50">{sending ? "Sending…" : "Send message"}</button></form>}<p className="mt-3 text-sm text-ink-3">Your conversation is saved. You can speak or type.</p>
       </section>
-      <section className="flex flex-col rounded-2xl border border-line bg-white p-6"><h2 className="font-display text-xl">Medical chart</h2>{encounter.chart.entries.length === 0 ? <p className="mt-6">No clinical details have been discussed in this encounter yet.</p> : <dl className="mt-5 space-y-3">{encounter.chart.entries.map((entry, i) => <div key={`${i}-${entry.label}`}><dt className="font-semibold capitalize">{entry.label}</dt><dd className="mt-1">{entry.value}</dd></div>)}</dl>}<p className="mt-6 text-ink-3">No reports available.</p><div className="mt-auto flex justify-end pt-8"><button className="rounded-lg bg-teal px-5 py-3 text-white" disabled={sending || encounter.busy || voiceState === "transcribing" || voiceState === "thinking"} onClick={endSession}>End session</button></div></section>
+      <section className="flex flex-col rounded-2xl border border-line bg-white p-6"><h2 className="font-display text-xl">Medical chart</h2>{encounter.chart.entries.length === 0 ? <p className="mt-6">No clinical details have been discussed in this encounter yet.</p> : <dl className="mt-5 space-y-3">{encounter.chart.entries.map((entry, i) => <div key={`${i}-${entry.label}`}><dt className="font-semibold capitalize">{entry.label}</dt><dd className="mt-1">{entry.value}</dd></div>)}</dl>}{encounter.chart.documents.length===0?<p className="mt-6 text-ink-3">No reports available yet.</p>:<section className="mt-6"><h3 className="font-semibold">Reports</h3>{encounter.chart.documents.map(doc=><article key={doc.id} className="mt-3 rounded border border-line p-4"><h4 className="font-semibold">{doc.title}</h4><p className="mt-2 whitespace-pre-wrap">{doc.findings}</p><a className="mt-2 inline-block text-teal underline" target="_blank" rel="noopener" href={`/api/encounters/${encounter.encounterId}/documents/${doc.id}${preview}`}>Open report</a></article>)}</section>}<div className="mt-auto flex justify-end pt-8"><button className="rounded-lg bg-teal px-5 py-3 text-white" disabled={sending || encounter.busy || voiceState === "transcribing" || voiceState === "thinking"} onClick={endSession}>End session</button></div></section>
     </div>}
   </main>;
 }

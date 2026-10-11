@@ -1,10 +1,12 @@
+import { readPatientFile } from "../lib/patient-files.js";
+import { releasedFindings } from "../lib/published-context.js";
 import { finishEncounter } from "../lib/encounter-feedback.js";
 import { loadPublishedContext } from '../lib/published-context.js';
 import { facultyStore } from '../lib/faculty-patients.js';
 import { facultyRoute } from "../lib/faculty-routes.js";
 import { transcribeQuestion, AUDIO_TYPES } from "../lib/student-transcription.js";
 import { savedReplySpeech } from "../lib/student-speech.js";
-import { authRoute, authenticatedStudent } from "../lib/student-auth.js";
+import { authRoute, authenticatedStudent, activeSessionRole } from "../lib/student-auth.js";
 import { createServer, type IncomingMessage } from "node:http";
 import { PatientLoadError } from "../lib/patient-loader.js";
 import { generatePreviewReply, PreviewReplyError } from "../lib/preview-conversation.js";
@@ -26,6 +28,7 @@ const server = createServer(async (req, res) => {
     if (await facultyRoute(req, res, url)) return;
     const student = await authenticatedStudent(req);
     if (!student) return send(401, { message: "Sign in to access the development preview." });
+    if (activeSessionRole(req) !== "student") return send(403, { message: "Sign in as a student to open encounters." });
     if (!enabled || url.searchParams.get("mode") !== "development-preview") return send(403, { message: "Explicit local development preview is required." });
     if (req.headers.origin && !/^http:\/\/(localhost|127\.0\.0\.1):8443$/.test(req.headers.origin)) return send(403, { message: "Origin not allowed." });
     if (req.method === "POST" && !req.headers.origin) return send(403, { message: "A same-origin browser request is required." });
@@ -39,6 +42,13 @@ const server = createServer(async (req, res) => {
     }
     const finishMatch = url.pathname.match(/^\/api\/encounters\/([0-9a-f-]{36})\/finish$/i);
     if (finishMatch && req.method === "POST") return send(200, { feedback: await finishEncounter(store, student.sub, finishMatch[1] ?? "") });
+    const documentMatch=url.pathname.match(/^\/api\/encounters\/([0-9a-f-]{36})\/documents\/([0-9a-f-]{36})$/i);
+    if(documentMatch && req.method==="GET") {
+      const owned=await store.get(student.sub,documentMatch[1]??"");
+      const item=owned?.context?.artifacts?.find(f=>f.id===documentMatch[2]);
+      if(!owned?.context || !item || !releasedFindings(owned.context,owned.messages).some(f=>f.group===`artifact:${item.id}`))throw new EncounterError(404,"Report unavailable for this encounter.");
+      const file=await readPatientFile(item);res.setHeader("Content-Type",file.type);res.setHeader("Content-Disposition",`inline; filename="${file.filename.replace(/["\r\n]/g,"_")}"`);res.setHeader("Content-Security-Policy","sandbox");res.end(file.bytes);return;
+    }
     const transcriptionMatch = url.pathname.match(/^\/api\/encounters\/([0-9a-f-]{36})\/transcription$/i);
     if (transcriptionMatch && req.method === "POST") {
       const mime = (req.headers["content-type"] ?? "").split(";")[0] ?? "";

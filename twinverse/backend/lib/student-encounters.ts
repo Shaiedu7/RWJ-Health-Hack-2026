@@ -41,15 +41,16 @@ export function encounterSummary(encounter: Encounter) { return { encounterId: e
 export function publicEncounter(encounter: Encounter) {
   const context = encounter.context;
   if (context) verifyContext(context);
+  const released = context ? releasedFindings(context,encounter.messages) : [];
   const ids = [...new Set(encounter.messages.filter(m => m.role === "assistant").flatMap(m => m.evidenceIds ?? []))];
-  const chartEntries = context?.card.approved ? releasedFindings(context,encounter.messages).map(item=>({label:item.label,value:item.value})) : context ? ids.filter(id => /^(clinical_profile|medication_profile)\./.test(id) && Object.hasOwn(context.evidence, id)).map(id => {
+  const chartEntries = context?.card.approved ? releasedFindings(context,encounter.messages).filter(item=>!item.group.startsWith("artifact:")).map(item=>({label:item.label,value:item.value})) : context ? ids.filter(id => /^(clinical_profile|medication_profile)\./.test(id) && Object.hasOwn(context.evidence, id)).map(id => {
     const medication = id.match(/^medication_profile\.medications\.(\d+)\.(.+)$/);
     const label = medication ? `${String(context.evidence[`medication_profile.medications.${medication[1]}.name`] ?? "Medication")} · ${(medication[2] ?? "detail").replaceAll("_", " ")}` : id.split(".").filter(v => !/^\d+$/.test(v)).slice(1).join(" · ").replaceAll("_", " ");
     return { label, value: String(context.evidence[id]) };
   }) : [];
   return { encounterId: encounter.encounterId, patientId: encounter.patientId, mode: encounter.mode, revision: encounter.revision, messages: encounter.messages.map(({ id, role, text, sequence, createdAt }) => ({ id, role, text, sequence, createdAt })), busy: !!encounter.pending && encounter.pending.until > Date.now(), readOnly: !context || !!encounter.endedAt, endedAt: encounter.endedAt ?? null, feedback: encounter.feedback ?? null,
     patient: context?.card ?? { patientId: encounter.patientId, mode: "development-preview", approved: false, source: "CSV", fields: { name: "Wyatt Nelson", age: 18, background: "High school student" } },
-    chart: { entries: chartEntries, documentsAvailable: false, behavior: context?.card.approved ? "Faculty-reviewed chart settings determine when structured findings appear. No report files are available." : "Demo application behavior: show supplied clinical details discussed in this conversation. No faculty-approved chart release rules or report files are available." } };
+    chart: { entries: chartEntries, documents: (context?.artifacts ?? []).filter(file=>released.some(f=>f.group===`artifact:${file.id}`)).map(file=>({id:file.id,title:file.title,findings:file.findings??"",contentType:file.content_type})), documentsAvailable: (context?.artifacts ?? []).some(file=>released.some(f=>f.group===`artifact:${file.id}`)), behavior: context?.card.approved ? "Faculty-reviewed chart settings determine when structured findings appear. No report files are available." : "Demo application behavior: show supplied clinical details discussed in this conversation. No faculty-approved chart release rules or report files are available." } };
 }
 export async function openEncounter(store: EncounterStore, student: string, context: PreviewContext) {
   verifyContext(context);

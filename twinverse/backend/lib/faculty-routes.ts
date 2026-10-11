@@ -1,3 +1,4 @@
+import { uploadPatientFile, readPatientFile, MAX_FILE_BYTES, type PatientFile } from "./patient-files.js";
 import { parseProfileText, exportProfile } from "./faculty-review.js";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { authenticatedStudent, activeSessionRole } from "./student-auth.js";
@@ -63,11 +64,26 @@ export async function facultyRoute(
       send(200, { name: "Faculty demo", role: "faculty" });
       return true;
     }
+    if(path==="/storage/status" && req.method==="GET") {send(200,{uploadsEnabled:process.env["ENABLE_PATIENT_FILES"]==="true"});return true;}
     if (path === "/schema" && req.method === "GET") {
       send(200, facultySchema);
       return true;
     }
     const store = await facultyStore();
+    const upload = path.match(/^\/patients\/(faculty-[0-9a-f-]{36})\/(artifacts|knowledge)$/i);
+    if (upload && req.method === "POST") {
+      const chunks: Buffer[]=[]; let length=0;
+      for await(const chunk of req) {const bytes=Buffer.from(chunk as Uint8Array); length+=bytes.length; if(length>MAX_FILE_BYTES)throw new FacultyError(413,"Choose a file under 2 MB.");chunks.push(bytes);}
+      send(201, await uploadPatientFile(store,facultyId,upload[1]??"",Number(url.searchParams.get("revision")),upload[2] as "artifacts"|"knowledge",url.searchParams.get("filename")??"document",url.searchParams.get("title")??"",req.headers["content-type"]??"",Buffer.concat(chunks)));
+      return true;
+    }
+    const fileMatch = path.match(/^\/patients\/(faculty-[0-9a-f-]{36})\/files\/([0-9a-f-]{36})$/i);
+    if(fileMatch && req.method==="GET") {
+      const current=await store.get(facultyId,fileMatch[1]??""); const profile=current["profile"] as Record<string,unknown>;
+      const item=[...(profile["artifacts"] as PatientFile[]),...(profile["knowledge"] as PatientFile[])].find(f=>f.id===fileMatch[2]);
+      if(!item)throw new FacultyError(404,"File unavailable.");
+      const file=await readPatientFile(item);res.setHeader("Content-Type",file.type);res.setHeader("Content-Disposition",`inline; filename="${file.filename.replace(/["\r\n]/g,"_")}"`);res.setHeader("Content-Security-Policy","sandbox");res.end(file.bytes);return true;
+    }
     if (path === "/profiles/serialize" && req.method === "POST") {
       const input = await body(req);
       const profile = validateFacultyProfile(input["profile"]);

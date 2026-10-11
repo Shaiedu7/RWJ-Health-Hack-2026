@@ -10,7 +10,7 @@ import {
 
 const id = "import-d95bcab43d3144ceedd0ae8c";
 const fixture = (
-  JSON.parse(readFileSync("review/wyatt-import-preview.json", "utf8")) as {
+  JSON.parse(readFileSync(new URL("./fixtures/wyatt-import-preview.json", import.meta.url), "utf8")) as {
     items: StoredItem[];
   }
 ).items;

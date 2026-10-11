@@ -51,6 +51,22 @@
               "type": "start",
               "value": ""
             }
+          },
+          "object_key": {
+            "type": "string",
+            "title": "object key"
+          },
+          "filename": {
+            "type": "string",
+            "title": "filename"
+          },
+          "content_type": {
+            "type": "string",
+            "title": "content type"
+          },
+          "reviewed": {
+            "type": "boolean",
+            "title": "reviewed"
           }
         },
         "title": "Artifact",
@@ -615,7 +631,11 @@
           },
           "difficulty": {
             "default": "intermediate",
-            "enum": ["beginner", "intermediate", "advanced"],
+            "enum": [
+              "beginner",
+              "intermediate",
+              "advanced"
+            ],
             "title": "Difficulty",
             "type": "string"
           }
@@ -640,7 +660,11 @@
             "anyOf": [
               {
                 "type": "string",
-                "enum": ["low", "moderate", "high"]
+                "enum": [
+                  "low",
+                  "moderate",
+                  "high"
+                ]
               },
               {
                 "type": "null"
@@ -741,7 +765,11 @@
           },
           "mode": {
             "default": "if_asked",
-            "enum": ["volunteer", "if_asked", "only_if_probed"],
+            "enum": [
+              "volunteer",
+              "if_asked",
+              "only_if_probed"
+            ],
             "title": "Mode",
             "type": "string"
           }
@@ -773,6 +801,48 @@
         "title": "Trigger",
         "type": "object",
         "additionalProperties": false
+      },
+      "Knowledge": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "id"
+          },
+          "object_key": {
+            "type": "string",
+            "title": "object key"
+          },
+          "filename": {
+            "type": "string",
+            "title": "filename"
+          },
+          "content_type": {
+            "type": "string",
+            "title": "content type"
+          },
+          "title": {
+            "type": "string",
+            "title": "title"
+          },
+          "text": {
+            "type": "string",
+            "title": "text"
+          },
+          "reviewed": {
+            "type": "boolean",
+            "title": "reviewed"
+          },
+          "purpose": {
+            "type": "string",
+            "enum": [
+              "teaching_reference",
+              "patient_record"
+            ],
+            "title": "Use as"
+          }
+        }
       }
     },
     "properties": {
@@ -821,8 +891,7 @@
       "knowledge": {
         "default": [],
         "items": {
-          "additionalProperties": true,
-          "type": "object"
+          "$ref": "#/$defs/Knowledge"
         },
         "title": "Knowledge",
         "type": "array"

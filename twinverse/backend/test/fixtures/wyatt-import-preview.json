@@ -1,0 +1,196 @@
+{
+  "status": "PREVIEW_ONLY",
+  "items": [
+    {
+      "PK": "SOURCEPATIENT#twinverse-event#faculty-provided-sample-patient-details#4d619156-3250-4212-8399-129f3280fab1",
+      "SK": "MAPPING",
+      "entityType": "SOURCE_PATIENT_MAPPING",
+      "patientId": "import-d95bcab43d3144ceedd0ae8c",
+      "sourceNamespace": "faculty-provided-sample-patient-details",
+      "sourcePatientUuid": "4d619156-3250-4212-8399-129f3280fab1",
+      "scopeId": "twinverse-event"
+    },
+    {
+      "PK": "PATIENT#import-d95bcab43d3144ceedd0ae8c",
+      "SK": "HEAD",
+      "entityType": "PATIENT",
+      "schemaVersion": 1,
+      "patientId": "import-d95bcab43d3144ceedd0ae8c",
+      "scopeId": "twinverse-event",
+      "sourcePatientUuid": "4d619156-3250-4212-8399-129f3280fab1",
+      "status": "DRAFT",
+      "approvalStatus": "UNAPPROVED",
+      "reviewRequired": true,
+      "draftRevision": 1,
+      "ownerFacultyId": "IMPORT_PRINCIPAL#arn:aws:iam::977659666193:role/WSParticipantRole",
+      "ownerIdentityType": "AWS_IMPORT_PRINCIPAL",
+      "ownerPrincipalArn": "arn:aws:iam::977659666193:role/WSParticipantRole",
+      "facultyOwnerAssignmentRequired": true,
+      "createdAt": "SET_AT_IMPORT",
+      "updatedAt": "SET_AT_IMPORT",
+      "displayName": "Wyatt Nelson",
+      "ownerIndexPK": "SCOPE#twinverse-event#OWNER#IMPORT_PRINCIPAL#arn:aws:iam::977659666193:role/WSParticipantRole",
+      "ownerIndexSK": "SET_AT_IMPORT#import-d95bcab43d3144ceedd0ae8c",
+      "sourceEditionId": "csv-ea802c9ac4dcd522c10ba2fcbb90fe248cfc0a0879f91876659ab76b209d43c8"
+    },
+    {
+      "PK": "PATIENT#import-d95bcab43d3144ceedd0ae8c",
+      "SK": "DRAFT#PROFILE",
+      "entityType": "PATIENT_DRAFT_PROFILE",
+      "schemaVersion": 1,
+      "patientId": "import-d95bcab43d3144ceedd0ae8c",
+      "name": "Wyatt Nelson",
+      "age": 18,
+      "background": "High school student",
+      "gender": "male",
+      "personality": "Shy, resistant, sensitive",
+      "raceEthnicity": "White American",
+      "suppliedNotes": "Wyatt has a BMI of 32 and dyslipidemia (Total Chol 235, LDL 145). He struggles with constipation but avoids talking about it.  He dislikes fruits and vegetables and needs developmentally appropriate counseling around fiber, fat intake, bowel health, and cardiovascular risk.",
+      "suppliedSummary": "Obesity, Dyslipidemia, Constipation",
+      "approvalStatus": "UNAPPROVED",
+      "reviewRequired": true,
+      "fieldProvenance": {
+        "name": {
+          "sourceEditionId": "csv-ea802c9ac4dcd522c10ba2fcbb90fe248cfc0a0879f91876659ab76b209d43c8",
+          "snapshotSK": "IMPORT#csv-ea802c9ac4dcd522c10ba2fcbb90fe248cfc0a0879f91876659ab76b209d43c8#d4a1e800c3c283d0e1dbaba3858d350d49c3b2135dcb0dd691a24d331896ed56",
+          "column": "patient-name",
+          "approvalStatus": "UNAPPROVED"
+        },
+        "age": {
+          "sourceEditionId": "csv-ea802c9ac4dcd522c10ba2fcbb90fe248cfc0a0879f91876659ab76b209d43c8",
+          "snapshotSK": "IMPORT#csv-ea802c9ac4dcd522c10ba2fcbb90fe248cfc0a0879f91876659ab76b209d43c8#d4a1e800c3c283d0e1dbaba3858d350d49c3b2135dcb0dd691a24d331896ed56",
+          "column": "age",
+          "approvalStatus": "UNAPPROVED"
+        },
+        "background": {
+          "sourceEditionId": "csv-ea802c9ac4dcd522c10ba2fcbb90fe248cfc0a0879f91876659ab76b209d43c8",
+          "snapshotSK": "IMPORT#csv-ea802c9ac4dcd522c10ba2fcbb90fe248cfc0a0879f91876659ab76b209d43c8#d4a1e800c3c283d0e1dbaba3858d350d49c3b2135dcb0dd691a24d331896ed56",
+          "column": "background",
+          "approvalStatus": "UNAPPROVED"
+        },
+        "gender": {
+          "sourceEditionId": "csv-ea802c9ac4dcd522c10ba2fcbb90fe248cfc0a0879f91876659ab76b209d43c8",
+          "snapshotSK": "IMPORT#csv-ea802c9ac4dcd522c10ba2fcbb90fe248cfc0a0879f91876659ab76b209d43c8#d4a1e800c3c283d0e1dbaba3858d350d49c3b2135dcb0dd691a24d331896ed56",
+          "column": "gender",
+          "approvalStatus": "UNAPPROVED"
+        },
+        "personality": {
+          "sourceEditionId": "csv-ea802c9ac4dcd522c10ba2fcbb90fe248cfc0a0879f91876659ab76b209d43c8",
+          "snapshotSK": "IMPORT#csv-ea802c9ac4dcd522c10ba2fcbb90fe248cfc0a0879f91876659ab76b209d43c8#d4a1e800c3c283d0e1dbaba3858d350d49c3b2135dcb0dd691a24d331896ed56",
+          "column": "personality",
+          "approvalStatus": "UNAPPROVED"
+        },
+        "raceEthnicity": {
+          "sourceEditionId": "csv-ea802c9ac4dcd522c10ba2fcbb90fe248cfc0a0879f91876659ab76b209d43c8",
+          "snapshotSK": "IMPORT#csv-ea802c9ac4dcd522c10ba2fcbb90fe248cfc0a0879f91876659ab76b209d43c8#d4a1e800c3c283d0e1dbaba3858d350d49c3b2135dcb0dd691a24d331896ed56",
+          "column": "race/ethinicity",
+          "approvalStatus": "UNAPPROVED"
+        },
+        "suppliedNotes": {
+          "sourceEditionId": "csv-ea802c9ac4dcd522c10ba2fcbb90fe248cfc0a0879f91876659ab76b209d43c8",
+          "snapshotSK": "IMPORT#csv-ea802c9ac4dcd522c10ba2fcbb90fe248cfc0a0879f91876659ab76b209d43c8#d4a1e800c3c283d0e1dbaba3858d350d49c3b2135dcb0dd691a24d331896ed56",
+          "column": "notes",
+          "approvalStatus": "UNAPPROVED"
+        },
+        "suppliedSummary": {
+          "sourceEditionId": "csv-ea802c9ac4dcd522c10ba2fcbb90fe248cfc0a0879f91876659ab76b209d43c8",
+          "snapshotSK": "IMPORT#csv-ea802c9ac4dcd522c10ba2fcbb90fe248cfc0a0879f91876659ab76b209d43c8#d4a1e800c3c283d0e1dbaba3858d350d49c3b2135dcb0dd691a24d331896ed56",
+          "column": "summary",
+          "approvalStatus": "UNAPPROVED"
+        }
+      },
+      "portraitAssetId": "portrait-source",
+      "sourceProvenance": {
+        "sourceNamespace": "faculty-provided-sample-patient-details",
+        "sourcePatientUuid": "4d619156-3250-4212-8399-129f3280fab1",
+        "sourceEditionId": "csv-ea802c9ac4dcd522c10ba2fcbb90fe248cfc0a0879f91876659ab76b209d43c8",
+        "packageFilename": "Challenge 1_ The Virtual Patient Encounter System.zip",
+        "packageSha256": "ff356f2f6c0442e60bd26cfc818f5b80bd317ab13455cad432077ffb592e682f",
+        "csvSha256": "ea802c9ac4dcd522c10ba2fcbb90fe248cfc0a0879f91876659ab76b209d43c8",
+        "csvMemberPath": "Challenge 1_ The Virtual Patient Encounter System/faculty-provided-sample-patient-details.csv",
+        "csvRowNumber": 3,
+        "csvRowNumberConvention": "1-based CSV record number including header",
+        "rowSha256": "d4a1e800c3c283d0e1dbaba3858d350d49c3b2135dcb0dd691a24d331896ed56",
+        "importedAt": "SET_AT_IMPORT",
+        "importedByArn": "SET_FROM_VERIFIED_CALLER",
+        "normalizerVersion": "wyatt-draft-v1",
+        "snapshotSK": "IMPORT#csv-ea802c9ac4dcd522c10ba2fcbb90fe248cfc0a0879f91876659ab76b209d43c8#d4a1e800c3c283d0e1dbaba3858d350d49c3b2135dcb0dd691a24d331896ed56"
+      },
+      "unknownAnswerBehavior": null,
+      "clinicalFactsApprovalStatus": "UNREVIEWED",
+      "missingInformation": [
+        "Cholesterol units",
+        "Test dates",
+        "Approved disclosure rules",
+        "Approved unknown-answer behavior",
+        "Faculty-defined objectives"
+      ],
+      "reviewNotes": [
+        "Supplied notes mix clinical statements and teaching suggestions; faculty must review before any fact/objective extraction."
+      ]
+    },
+    {
+      "PK": "PATIENT#import-d95bcab43d3144ceedd0ae8c",
+      "SK": "DRAFT#ASSET#portrait-source",
+      "entityType": "PATIENT_PORTRAIT",
+      "sourcePatientUuid": "4d619156-3250-4212-8399-129f3280fab1",
+      "originalFilename": "Wyatt Nelson, Patient.png",
+      "archiveMemberPath": "Challenge 1_ The Virtual Patient Encounter System/sample patient profiles for student interaction/patient images/Wyatt Nelson, Patient.png",
+      "duplicateMemberPath": "Challenge 1_ The Virtual Patient Encounter System/sample patient profiles for student interaction/patient images/patient-images.zip!patient-images/Wyatt Nelson, Patient.png",
+      "sha256": "7ef7e5d82af2972f65e550ec3a10e26b0a912970a140129ef30688a7e651a30b",
+      "matchBasis": "SUPPLIED_FILENAME",
+      "matchStatus": "UNVERIFIED",
+      "approvalStatus": "UNAPPROVED",
+      "externalSourceUri": "s3://ru-shp-vhs-bucket/vhs-patients/images/4d619156-3250-4212-8399-129f3280fab1.png",
+      "accessStatus": "UNVERIFIED",
+      "applicationStorageReference": null,
+      "uploaded": false
+    },
+    {
+      "PK": "PATIENT#import-d95bcab43d3144ceedd0ae8c",
+      "SK": "IMPORT#csv-ea802c9ac4dcd522c10ba2fcbb90fe248cfc0a0879f91876659ab76b209d43c8#d4a1e800c3c283d0e1dbaba3858d350d49c3b2135dcb0dd691a24d331896ed56",
+      "entityType": "IMMUTABLE_IMPORT_SNAPSHOT",
+      "originalRow": {
+        "patient-uuid": "4d619156-3250-4212-8399-129f3280fab1",
+        "patient-name": "Wyatt Nelson",
+        "age": "18",
+        "background": "High school student",
+        "gender": "male",
+        "notes": "\"Wyatt has a BMI of 32 and dyslipidemia (Total Chol 235, LDL 145). He struggles with constipation but avoids talking about it.  He dislikes fruits and vegetables and needs developmentally appropriate counseling around fiber, fat intake, bowel health, and cardiovascular risk.\"",
+        "patient-img": "s3://ru-shp-vhs-bucket/vhs-patients/images/4d619156-3250-4212-8399-129f3280fab1.png",
+        "personality": "\"Shy, resistant, sensitive\"",
+        "race/ethinicity": "White American",
+        "summary": "\"Obesity, Dyslipidemia, Constipation\""
+      },
+      "originalCsvRecord": "\"4d619156-3250-4212-8399-129f3280fab1\",\"Wyatt Nelson\",\"18\",\"High school student\",\"male\",\"\"\"Wyatt has a BMI of 32 and dyslipidemia (Total Chol 235, LDL 145). He struggles with constipation but avoids talking about it.  He dislikes fruits and vegetables and needs developmentally appropriate counseling around fiber, fat intake, bowel health, and cardiovascular risk.\"\"\",\"s3://ru-shp-vhs-bucket/vhs-patients/images/4d619156-3250-4212-8399-129f3280fab1.png\",\"\"\"Shy, resistant, sensitive\"\"\",\"White American\",\"\"\"Obesity, Dyslipidemia, Constipation\"\"\"\r",
+      "provenance": {
+        "sourceNamespace": "faculty-provided-sample-patient-details",
+        "sourcePatientUuid": "4d619156-3250-4212-8399-129f3280fab1",
+        "sourceEditionId": "csv-ea802c9ac4dcd522c10ba2fcbb90fe248cfc0a0879f91876659ab76b209d43c8",
+        "packageFilename": "Challenge 1_ The Virtual Patient Encounter System.zip",
+        "packageSha256": "ff356f2f6c0442e60bd26cfc818f5b80bd317ab13455cad432077ffb592e682f",
+        "csvSha256": "ea802c9ac4dcd522c10ba2fcbb90fe248cfc0a0879f91876659ab76b209d43c8",
+        "csvMemberPath": "Challenge 1_ The Virtual Patient Encounter System/faculty-provided-sample-patient-details.csv",
+        "csvRowNumber": 3,
+        "csvRowNumberConvention": "1-based CSV record number including header",
+        "rowSha256": "d4a1e800c3c283d0e1dbaba3858d350d49c3b2135dcb0dd691a24d331896ed56",
+        "importedAt": "SET_AT_IMPORT",
+        "importedByArn": "SET_FROM_VERIFIED_CALLER",
+        "normalizerVersion": "wyatt-draft-v1",
+        "snapshotSK": "IMPORT#csv-ea802c9ac4dcd522c10ba2fcbb90fe248cfc0a0879f91876659ab76b209d43c8#d4a1e800c3c283d0e1dbaba3858d350d49c3b2135dcb0dd691a24d331896ed56"
+      }
+    },
+    {
+      "PK": "PATIENT#import-d95bcab43d3144ceedd0ae8c",
+      "SK": "REQUEST#import-ea00c66a7c48a8855ed4beaf0acdaef882a3070c118386d57486e70801af941d",
+      "entityType": "IMPORT_RECEIPT",
+      "requestId": "import-ea00c66a7c48a8855ed4beaf0acdaef882a3070c118386d57486e70801af941d",
+      "requestPayloadHash": "d4a1e800c3c283d0e1dbaba3858d350d49c3b2135dcb0dd691a24d331896ed56",
+      "status": "COMPLETE",
+      "patientId": "import-d95bcab43d3144ceedd0ae8c",
+      "sourceEditionId": "csv-ea802c9ac4dcd522c10ba2fcbb90fe248cfc0a0879f91876659ab76b209d43c8",
+      "importedAt": "SET_AT_IMPORT",
+      "importedByArn": "SET_FROM_VERIFIED_CALLER"
+    }
+  ]
+}

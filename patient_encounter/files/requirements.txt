@@ -1,7 +1,0 @@
-fastapi
-uvicorn
-boto3
-numpy
-pypdf
-python-multipart
-pydantic>=2

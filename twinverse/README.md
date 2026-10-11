@@ -1,6 +1,6 @@
 # TwinVerse - combined student and faculty application
 
-This branch contains the current student encounter and Faculty Studio, sharing the TypeScript backend and existing AWS services. The older Python faculty project at the repository root is preserved for reference.
+This branch contains the current student encounter and Faculty Studio, sharing the TypeScript backend and existing AWS services. The older faculty project and challenge documents remain on main and the other preserved branches.
 
 ## Run locally
 

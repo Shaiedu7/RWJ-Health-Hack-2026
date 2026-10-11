@@ -1,4 +1,0 @@
-# Copy this section to ~/.aws/config (Windows: %USERPROFILE%\.aws\config).
-[profile twinverse-event]
-region = us-west-2
-output = json

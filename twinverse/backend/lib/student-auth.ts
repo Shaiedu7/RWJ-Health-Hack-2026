@@ -9,7 +9,7 @@ const accessVerifier = CognitoJwtVerifier.create({ userPoolId, clientId, tokenUs
 const idVerifier = CognitoJwtVerifier.create({ userPoolId, clientId, tokenUse: "id" });
 const random = () => randomBytes(32).toString("base64url");
 const pending = new Map<string, { state: string; nonce: string; verifier: string; callback: string; origin: string; destination: string; expires: number }>();
-const sessions = new Map<string, { token: string; expires: number }>();
+const sessions = new Map<string, { token: string; expires: number; role: "student" | "faculty" }>();
 function cookie(req: IncomingMessage, name: string) {
   return req.headers.cookie?.split(";").map(v => v.trim()).find(v => v.startsWith(`${name}=`))?.slice(name.length + 1);
 }
@@ -28,6 +28,13 @@ function cleanup() {
   for (const [key, item] of pending) if (item.expires < now) pending.delete(key);
   for (const [key, item] of sessions) if (item.expires < now) sessions.delete(key);
 }
+export function sessionAllowsFaculty(role: string | undefined, groups: unknown): boolean {
+  return role === "faculty" && Array.isArray(groups) && groups.includes("Faculty");
+}
+export function activeSessionRole(req: IncomingMessage) {
+  cleanup();
+  return sessions.get(cookie(req, "twinverse_session") ?? "")?.role;
+}
 export async function authenticatedStudent(req: IncomingMessage) {
   cleanup();
   const session = sessions.get(cookie(req, "twinverse_session") ?? "");
@@ -40,7 +47,7 @@ export async function authRoute(req: IncomingMessage, res: ServerResponse, url: 
   const send = (status: number, body: unknown) => { res.statusCode = status; res.end(JSON.stringify(body)); };
   if (url.pathname === "/api/auth/session" && req.method === "GET") {
     const student = await authenticatedStudent(req);
-    send(student ? 200 : 401, student ? { signedIn: true, studentId: student.sub } : { signedIn: false });
+    send(student ? 200 : 401, student ? { signedIn: true, studentId: student.sub, role: activeSessionRole(req) } : { signedIn: false });
     return true;
   }
   if (url.pathname === "/api/auth/logout" && req.method === "POST") {
@@ -69,7 +76,9 @@ export async function authRoute(req: IncomingMessage, res: ServerResponse, url: 
       const identity = await idVerifier.verify(tokens.id_token);
       const access = await accessVerifier.verify(tokens.access_token);
       if (identity.nonce !== flow.nonce || identity.sub !== access.sub || identity.email_verified !== true) throw new Error("Identity verification failed");
-      const id = random(); sessions.set(id, { token: tokens.access_token, expires: access.exp * 1000 });
+      const role = flow.destination === "/faculty.html" ? "faculty" : "student";
+      if (role === "faculty" && !sessionAllowsFaculty(role, access["cognito:groups"])) throw new Error("Faculty membership required");
+      const id = random(); sessions.set(id, { token: tokens.access_token, expires: access.exp * 1000, role });
       setCookie(res, id, Math.max(0, access.exp - Math.floor(Date.now() / 1000))); redirect(res, `${flow.origin}${flow.destination}`);
     } catch { fail(); }
     return true;

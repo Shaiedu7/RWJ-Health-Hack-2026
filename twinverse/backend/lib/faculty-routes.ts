@@ -1,6 +1,6 @@
 import { parseProfileText, exportProfile } from "./faculty-review.js";
 import type { IncomingMessage, ServerResponse } from "node:http";
-import { authenticatedStudent } from "./student-auth.js";
+import { authenticatedStudent, activeSessionRole } from "./student-auth.js";
 import { generateFacultyProfile } from "./faculty-generation.js";
 import {
   FacultyError,
@@ -45,7 +45,10 @@ export async function facultyRoute(
       process.env["ENABLE_FACULTY_DEVELOPMENT"] !== "true"
     )
       throw new FacultyError(403, "Faculty development access is disabled.");
-    const facultyId = requireFaculty(await authenticatedStudent(req));
+    const identity = await authenticatedStudent(req);
+    if (!identity) throw new FacultyError(401, "Sign in with Cognito.");
+    if (activeSessionRole(req) !== "faculty") throw new FacultyError(403, "You are signed in as a student. Sign in through Faculty to open Patient Studio.");
+    const facultyId = requireFaculty(identity);
     if (!["GET", "POST", "PUT"].includes(req.method ?? ""))
       throw new FacultyError(405, "Method not supported.");
     if (

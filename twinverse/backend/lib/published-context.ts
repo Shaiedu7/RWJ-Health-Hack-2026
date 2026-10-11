@@ -108,7 +108,7 @@ export function studioContext(
         ? ["Allergy status is unknown: no negative finding supplied."]
         : [],
     reviewOnly: {
-      teachingObjectives: null,
+      teachingObjectives: profile["learning"] as SourceValue,
       sourceMetadata: null,
       disclosureCategories: null,
       disclosureExecutable: false as const,

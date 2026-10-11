@@ -1,3 +1,4 @@
+import { finishEncounter } from "../lib/encounter-feedback.js";
 import { loadPublishedContext } from '../lib/published-context.js';
 import { facultyStore } from '../lib/faculty-patients.js';
 import { facultyRoute } from "../lib/faculty-routes.js";
@@ -36,6 +37,8 @@ const server = createServer(async (req, res) => {
       const context = input.patientId===RICH_WYATT_ID ? await loadPreviewContext(input.patientId) : await loadPublishedContext(input.patientId);
       return send(200, { encounter: publicEncounter(await openEncounter(store, student.sub, context)) });
     }
+    const finishMatch = url.pathname.match(/^\/api\/encounters\/([0-9a-f-]{36})\/finish$/i);
+    if (finishMatch && req.method === "POST") return send(200, { feedback: await finishEncounter(store, student.sub, finishMatch[1] ?? "") });
     const transcriptionMatch = url.pathname.match(/^\/api\/encounters\/([0-9a-f-]{36})\/transcription$/i);
     if (transcriptionMatch && req.method === "POST") {
       const mime = (req.headers["content-type"] ?? "").split(";")[0] ?? "";

@@ -1,3 +1,4 @@
+import { readFeedback, type Feedback } from "./feedback.ts";
 import { VoiceConversation, type VoiceState } from "./voiceConversation.ts";
 import wyattPortrait from "./assets/wyatt-nelson.png";
 import { useEffect, useRef, useState } from "react";
@@ -20,6 +21,9 @@ export default function App() {
   const [patient, setPatient] = useState<Patient | null>(null);
   const [encounter, setEncounter] = useState<Encounter | null>(null);
   const [processing, setProcessing] = useState(false);
+  const [feedback, setFeedback] = useState<Feedback | null>(null);
+  const [feedbackError, setFeedbackError] = useState("");
+  const [reviewing, setReviewing] = useState(false);
   const [room, setRoom] = useState(false);
   const [savedEncounters, setSavedEncounters] = useState<EncounterSummary[]>([]);
   const [selectedId, setSelectedId] = useState(new URLSearchParams(window.location.search).get("encounter"));
@@ -58,6 +62,7 @@ export default function App() {
         if (selectedId) {
           const response = await api(`/api/encounters/${selectedId}${preview}`);
           const restored = parseEncounter(response.encounter);
+          if (!cancelled && response.encounter.endedAt) { setProcessing(true); if (response.encounter.feedback) setFeedback(readFeedback(response.encounter.feedback)); }
           if (!cancelled) { setPatient(restored.patient); setEncounter(restored); setRoom(true); }
         } else {
           const catalogue = await api(`/api/patients${preview}`);
@@ -122,8 +127,15 @@ export default function App() {
   function selectEncounter(id: string) {
     setSelectedId(id); window.history.replaceState(null, "", `/?encounter=${encodeURIComponent(id)}`);
   }
+  async function reviewSession() {
+    if (!encounter || reviewing) return;
+    setReviewing(true); setFeedbackError("");
+    try { const result = await api(`/api/encounters/${encounter.encounterId}/finish${preview}`, { method: "POST" }); setFeedback(readFeedback(result.feedback)); }
+    catch (error) { setFeedbackError(error instanceof Error ? error.message : "Feedback unavailable. Your conversation is saved."); }
+    finally { setReviewing(false); }
+  }
   function endSession() {
-    voice.current?.stop(); audioController.current?.abort(); playing.current?.stop(); playing.current = null; setPlayingReply(false); setAudioBusy(null); setProcessing(true);
+    voice.current?.stop(); audioController.current?.abort(); playing.current?.stop(); playing.current = null; setPlayingReply(false); setAudioBusy(null); setFeedback(null); setFeedbackError(""); setProcessing(true); void reviewSession();
   }
   function showPatients() { setProcessing(false); setPatient(null); setSelectedId(null); setRoom(false); setEncounter(null); setText(""); pending.current = null; window.history.replaceState(null, "", "/"); setReload(r => r + 1); }
   async function openRoom(selectedPatient = patient) {
@@ -152,13 +164,13 @@ export default function App() {
     voice.current?.stop(); audioController.current?.abort(); playing.current?.stop(); playing.current = null;
     try { const result = await api("/api/auth/logout", { method: "POST" }); window.location.assign(result.logoutUrl); } catch (error) { report(error); }
   }
-  if (processing) return <main className="min-h-dvh bg-paper text-ink p-6 md:p-12"><p className="text-teal font-semibold">TwinVerse · Student</p><section className="mx-auto mt-24 max-w-lg rounded-2xl border border-line bg-white p-10 text-center"><div className="mx-auto mb-6 h-10 w-10 animate-spin rounded-full border-4 border-teal/20 border-t-teal" aria-hidden="true" /><h1 className="font-display text-3xl">Processing your session</h1><p className="mt-4 text-ink-3" role="status">{sending || encounter?.busy ? "Finishing your last exchange…" : "Session ended. Your saved conversation remains available."}</p><p className="mt-3 text-sm text-ink-3">Session review isn’t available yet.</p><button className="mt-8 rounded-lg bg-teal px-5 py-3 text-white" disabled={sending || encounter?.busy} onClick={showPatients}>Back to patients</button></section></main>;
+  if (processing) return <main className="min-h-dvh bg-paper text-ink p-6 md:p-12"><p className="text-teal font-semibold">TwinVerse · Student</p><section className="mx-auto mt-10 max-w-4xl rounded-2xl border border-line bg-white p-8"><h1 className="font-display text-3xl">{feedback ? "Encounter feedback" : reviewing ? "Reviewing your session" : "Session ended"}</h1>{reviewing && <p className="mt-4" role="status">Comparing your saved interview with the patient’s learning objectives…</p>}{feedbackError && <div className="mt-4" role="alert"><p>{feedbackError}</p><button className="mt-3 rounded border px-4 py-2" onClick={() => void reviewSession()}>Retry feedback</button></div>}{feedback && <><p className="mt-3 text-sm text-ink-3">AI-generated educational feedback · {new Date(feedback.generatedAt).toLocaleString()}</p><p className="mt-4">{feedback.summary}</p><p className="mt-3 rounded bg-paper p-3">{feedback.objectiveStatus}</p>{([['strengths','Strengths'],['elicited','Findings elicited'],['missed','Findings to explore'],['improvements','Next attempt']] as const).map(([key,title])=><section key={key} className="mt-6"><h2 className="font-display text-xl">{title}</h2>{feedback[key].length===0?<p className="mt-2 text-ink-3">No supported observations in this category.</p>:feedback[key].map((item,i)=><article key={i} className="mt-3 rounded-xl border border-line p-4"><h3 className="font-semibold">{item.category}</h3><p className="mt-2">{item.observation}</p><p className="mt-2 text-teal">Next step: {item.suggestion}</p>{item.messageSequences.map(n=><blockquote key={n} className="mt-3 border-l-2 border-teal pl-3 text-sm text-ink-3">Exchange {n}: {encounter?.messages.find(m=>m.sequence===n)?.text}</blockquote>)}</article>)}</section>)}</>}<button className="mt-8 rounded-lg bg-teal px-5 py-3 text-white" disabled={reviewing} onClick={showPatients}>Back to patients</button></section></main>;
   return <main className="min-h-dvh bg-paper text-ink p-6 md:p-12">
     <header className="mb-6 flex justify-between gap-4"><div><p className="text-teal font-semibold">TwinVerse · Student <span className="ml-2 rounded bg-teal/10 px-2 py-1 text-xs font-normal">Demo</span></p><h1 className="font-display text-3xl mt-2">{room ? "Patient encounter" : "Choose a patient"}</h1></div>{signedIn && <button className="rounded border px-4 py-2 self-start" onClick={() => void signOut()}>Sign out</button>}</header>
     {signedIn && room && <button className="mb-4 rounded border px-4 py-2" disabled={sending} onClick={showPatients}>Choose patient / saved encounters</button>}
     {checkingLogin && <p role="status">Checking student login…</p>}
     {!checkingLogin && !signedIn && <section className="rounded-xl border border-line bg-white p-6"><h2 className="text-xl font-semibold">Welcome to TwinVerse</h2><p className="my-3">Choose where you want to work, then sign in with your demo account.</p><div className="flex flex-wrap gap-3"><a className="inline-block rounded-lg bg-teal text-white px-5 py-3" href="/api/auth/login">Student · Start an encounter</a><a className="inline-block rounded-lg border border-teal text-teal px-5 py-3" href="/api/auth/login?destination=faculty">Faculty · Patient Studio</a></div></section>}
-    {!checkingLogin && signedIn && !room && <a className="inline-block mb-4 rounded border border-teal px-4 py-2 text-teal" href="/faculty.html">Open Faculty Patient Studio</a>}
+
     {error && <div className="mb-4 rounded border border-red-300 bg-white p-4" role="alert"><p>{error}</p>{signedIn && <button className="mt-2 rounded border px-4 py-2" onClick={() => setReload(r => r + 1)}>Refresh saved conversation</button>}</div>}
     {loading && <p role="status" className="mb-4">Loading saved patient and conversation…</p>}
     {signedIn && !room && <div className="grid gap-4 md:grid-cols-2">{patients.map(card=><section key={card.patientId} className="rounded-xl border border-line bg-white p-6"><h2 className="text-2xl font-display">{card.fields.name}</h2><p className="mt-2">Age {card.fields.age ?? "not supplied"} · {card.fields.background ?? "Background not supplied"}</p><button disabled={loading} className="mt-5 rounded-lg bg-teal text-white px-5 py-3 disabled:opacity-50" onClick={() => void openRoom(card)}>Start encounter</button></section>)}</div>}
@@ -173,7 +185,7 @@ export default function App() {
         {(sending || encounter.busy) && <p className="my-3" role="status">The patient is replying…</p>}
         {!encounter.readOnly && <form className="mt-5" onSubmit={event => { event.preventDefault(); void send(); }}><label htmlFor="message" className="font-semibold">Talk to {encounter.patient.fields.name}</label><textarea id="message" value={text} onChange={event => setText(event.target.value)} maxLength={2000} disabled={sending || encounter.busy || voiceState !== "off"} placeholder="Type your question…" className="mt-2 w-full rounded border p-3" /><button type="submit" disabled={sending || encounter.busy || voiceState !== "off" || !text.trim()} className="mt-2 rounded-lg bg-teal text-white px-5 py-3 disabled:opacity-50">{sending ? "Sending…" : "Send message"}</button></form>}<p className="mt-3 text-sm text-ink-3">Your conversation is saved. You can speak or type.</p>
       </section>
-      <section className="flex flex-col rounded-2xl border border-line bg-white p-6"><h2 className="font-display text-xl">Medical chart</h2>{encounter.chart.entries.length === 0 ? <p className="mt-6">No clinical details have been discussed in this encounter yet.</p> : <dl className="mt-5 space-y-3">{encounter.chart.entries.map((entry, i) => <div key={`${i}-${entry.label}`}><dt className="font-semibold capitalize">{entry.label}</dt><dd className="mt-1">{entry.value}</dd></div>)}</dl>}<p className="mt-6 text-ink-3">No reports available.</p><div className="mt-auto flex justify-end pt-8"><button className="rounded-lg bg-teal px-5 py-3 text-white" onClick={endSession}>End session</button></div></section>
+      <section className="flex flex-col rounded-2xl border border-line bg-white p-6"><h2 className="font-display text-xl">Medical chart</h2>{encounter.chart.entries.length === 0 ? <p className="mt-6">No clinical details have been discussed in this encounter yet.</p> : <dl className="mt-5 space-y-3">{encounter.chart.entries.map((entry, i) => <div key={`${i}-${entry.label}`}><dt className="font-semibold capitalize">{entry.label}</dt><dd className="mt-1">{entry.value}</dd></div>)}</dl>}<p className="mt-6 text-ink-3">No reports available.</p><div className="mt-auto flex justify-end pt-8"><button className="rounded-lg bg-teal px-5 py-3 text-white" disabled={sending || encounter.busy || voiceState === "transcribing" || voiceState === "thinking"} onClick={endSession}>End session</button></div></section>
     </div>}
   </main>;
 }

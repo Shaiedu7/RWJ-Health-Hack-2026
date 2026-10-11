@@ -6,7 +6,7 @@ import { fromNodeProviderChain } from "@aws-sdk/credential-providers";
 import { REGION, TABLE_NAME } from "./patients-stack.js";
 import { type ChatMessage, type GroundedReply } from "./preview-conversation.js";
 import { CSV_WYATT_ID, RICH_WYATT_ID, verifyContext, type PreviewContext } from "./preview-context.js";
-export type Encounter = { encounterId: string; patientId: string; mode: "development-preview" | "published"; context?: PreviewContext; revision: number; version: number; messages: ChatMessage[]; requests: Record<string, { hash: string; revision: number }>; pending?: { requestId: string; hash: string; until: number }; updatedAt: string };
+export type Encounter = { endedAt?: string; feedback?: import("./encounter-feedback.js").EncounterFeedback; encounterId: string; patientId: string; mode: "development-preview" | "published"; context?: PreviewContext; revision: number; version: number; messages: ChatMessage[]; requests: Record<string, { hash: string; revision: number }>; pending?: { requestId: string; hash: string; until: number }; updatedAt: string };
 export class EncounterError extends Error { constructor(public status: number, message: string) { super(message); this.name = "EncounterError"; } }
 export interface EncounterStore { get(student: string, encounterId: string): Promise<Encounter | undefined>; list(student: string): Promise<Encounter[]>; save(student: string, next: Encounter, expectedVersion?: number): Promise<void> }
 export function createEncounterStore(): EncounterStore {
@@ -47,7 +47,7 @@ export function publicEncounter(encounter: Encounter) {
     const label = medication ? `${String(context.evidence[`medication_profile.medications.${medication[1]}.name`] ?? "Medication")} · ${(medication[2] ?? "detail").replaceAll("_", " ")}` : id.split(".").filter(v => !/^\d+$/.test(v)).slice(1).join(" · ").replaceAll("_", " ");
     return { label, value: String(context.evidence[id]) };
   }) : [];
-  return { encounterId: encounter.encounterId, patientId: encounter.patientId, mode: encounter.mode, revision: encounter.revision, messages: encounter.messages.map(({ id, role, text, sequence, createdAt }) => ({ id, role, text, sequence, createdAt })), busy: !!encounter.pending && encounter.pending.until > Date.now(), readOnly: !context,
+  return { encounterId: encounter.encounterId, patientId: encounter.patientId, mode: encounter.mode, revision: encounter.revision, messages: encounter.messages.map(({ id, role, text, sequence, createdAt }) => ({ id, role, text, sequence, createdAt })), busy: !!encounter.pending && encounter.pending.until > Date.now(), readOnly: !context || !!encounter.endedAt, endedAt: encounter.endedAt ?? null, feedback: encounter.feedback ?? null,
     patient: context?.card ?? { patientId: encounter.patientId, mode: "development-preview", approved: false, source: "CSV", fields: { name: "Wyatt Nelson", age: 18, background: "High school student" } },
     chart: { entries: chartEntries, documentsAvailable: false, behavior: context?.card.approved ? "Faculty-reviewed chart settings determine when structured findings appear. No report files are available." : "Demo application behavior: show supplied clinical details discussed in this conversation. No faculty-approved chart release rules or report files are available." } };
 }
@@ -61,6 +61,7 @@ export async function sendTurn(store: EncounterStore, student: string, input: { 
   let current = await store.get(student, input.encounterId);
   if (!current || current.encounterId !== input.encounterId) throw new EncounterError(404, "Encounter unavailable for this student.");
   if (!current.context) throw new EncounterError(409, "This archived CSV conversation is preserved read-only. Start a new richer Wyatt encounter.");
+  if (current.endedAt) throw new EncounterError(409, "This session has ended. Start a new encounter.");
   verifyContext(current.context);
   if (current.context.patientId !== current.patientId) throw new EncounterError(409, "Encounter patient binding is invalid.");
   const hash = createHash("sha256").update(input.text).digest("hex");

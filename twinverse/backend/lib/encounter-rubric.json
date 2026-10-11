@@ -1,0 +1,212 @@
+{
+  "rubricName": "Virtual Patient Encounter Rubric",
+  "description": "Conversational clinical interview only — no physical exam.",
+  "scoringScale": {
+    "3": "Exceeds Expectations",
+    "2": "Meets Expectations",
+    "1": "Below Expectations"
+  },
+  "totalItems": 16,
+  "maxScore": 48,
+  "sections": [
+    {
+      "id": "0",
+      "name": "Introduction",
+      "items": [
+        {
+          "id": "0.1",
+          "name": "Introduction / Rapport Building",
+          "prompt": "Did the student introduce themselves and set a comfortable tone before clinical questions?",
+          "scoring": {
+            "3": "Introduces self (name, role); greets warmly; makes small talk or asks how patient is feeling; establishes purpose and agenda; confirms patient's immediate concern",
+            "2": "Brief introduction, moves quickly into questions without building rapport; establishes a workable focus but misses agenda or patient priorities",
+            "1": "No introduction; jumps straight into questioning; begins abruptly or creates confusion"
+          }
+        }
+      ]
+    },
+    {
+      "id": "1",
+      "name": "History Assessment",
+      "items": [
+        {
+          "id": "1.1",
+          "name": "General HPI",
+          "prompt": "Generic — same for every patient. 10 items: Character, Location, Onset, Duration, Prior history, Radiation, Intensity, Trigger/Improvement, Setting, Social Impact",
+          "scoring": {
+            "3": "Asks 7+ of the 10 items",
+            "2": "Asks 4–6 of the 10 items",
+            "1": "Asks 0–3 of the 10 items"
+          }
+        },
+        {
+          "id": "1.2",
+          "name": "Case-Specific History",
+          "prompt": "Faculty-defined per patient. 3–5 associated symptoms the student should ask about.",
+          "scoring": {
+            "3": "Asks about majority of case-specific symptoms (≥70%)",
+            "2": "Asks about some (30–69%)",
+            "1": "Asks about few or none (<30%)"
+          }
+        },
+        {
+          "id": "1.3",
+          "name": "Medical History",
+          "prompt": "Generic — same for every patient. 6 categories: PMH, PSH, Medications, Allergies, Social Hx, Family Hx",
+          "scoring": {
+            "3": "Asks about 5–6 categories",
+            "2": "Asks about 3–4 categories",
+            "1": "Asks about 0–2 categories"
+          }
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "Closing / Counseling",
+      "items": [
+        {
+          "id": "2.1",
+          "name": "Differential Diagnosis Discussion",
+          "prompt": "Did the student share their thinking about what might be going on? Faculty defines expected differentials.",
+          "scoring": {
+            "3": "Discusses 3+ appropriate differential diagnoses with the patient",
+            "2": "Discusses 1–2 appropriate differentials",
+            "1": "Does not discuss, or discusses incorrect diagnoses"
+          }
+        },
+        {
+          "id": "2.2",
+          "name": "Next Steps / Workup",
+          "prompt": "Did the student explain what tests or studies they'd recommend? Faculty defines expected workup.",
+          "scoring": {
+            "3": "Explains all expected next steps (labs, imaging, other tests)",
+            "2": "Missing 1–2 key next steps",
+            "1": "Does not discuss next steps"
+          }
+        },
+        {
+          "id": "2.3",
+          "name": "Treatment / Medications",
+          "prompt": "Did the student discuss a treatment plan? Faculty defines expected treatment.",
+          "scoring": {
+            "3": "Explains appropriate treatment plan including side effects in patient-friendly language",
+            "2": "Discusses treatment but components are not appropriate or first-line",
+            "1": "Does not discuss treatment"
+          }
+        },
+        {
+          "id": "2.4",
+          "name": "Diagnostic Convergence",
+          "prompt": "Did the student's questioning progressively narrow toward a plausible assessment?",
+          "scoring": {
+            "3": "Questions build on each other logically; the student's line of reasoning visibly converges toward the correct diagnosis; closing statements reflect what was gathered",
+            "2": "Some evidence of narrowing, but with tangents or gaps in the logical chain; reaches a partial or incomplete conclusion",
+            "1": "Questions feel random or disconnected; no visible narrowing; closing does not follow from what was gathered"
+          }
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "name": "Organization / Efficiency",
+      "items": [
+        {
+          "id": "3.1",
+          "name": "Organization of Encounter",
+          "prompt": "Did the interview follow a logical structure?",
+          "scoring": {
+            "3": "Systematic interview — chief concern → HPI → medical history → social/family history → closing. Questions flow logically.",
+            "2": "Mostly organized but a few questions out of order or jumping between topics",
+            "1": "Interview completely out of sequence, difficult to follow thought process"
+          }
+        },
+        {
+          "id": "3.2",
+          "name": "Efficiency / Pace",
+          "prompt": "Did the conversation flow without unnecessary repetition?",
+          "scoring": {
+            "3": "Conversation flows well, no unnecessary repetition, builds on prior answers",
+            "2": "Occasionally re-asks something already answered, or has 1–2 unfocused tangents",
+            "1": "Frequently re-asks questions, goes in circles, fails to build on information provided"
+          }
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "name": "Communication Quality",
+      "items": [
+        {
+          "id": "4.1",
+          "name": "Empathy / Rapport",
+          "prompt": "Did the student acknowledge patient concerns and build trust?",
+          "scoring": {
+            "3": "Acknowledges concerns; validates feelings; shows warmth; uses attentive, nonjudgmental, culturally responsive language; patient appears heard",
+            "2": "Some empathetic responses but inconsistent, formulaic, rushed, or insufficiently attuned",
+            "1": "No acknowledgment of emotions; dismissive, judgmental, or emotionally unsafe communication"
+          }
+        },
+        {
+          "id": "4.2",
+          "name": "Question Quality",
+          "prompt": "Did the student use effective questioning techniques? Are questions clinically accurate?",
+          "scoring": {
+            "3": "Good mix of open-ended and focused follow-up questions; starts broad, narrows logically; questions are clinically accurate and relevant; uses appropriate sequencing",
+            "2": "Mostly closed yes/no questions but some open-ended ones; questions generally relevant but may lack clinical precision",
+            "1": "Almost entirely closed yes/no questions; feels like an interrogation; questions may be clinically inaccurate or irrelevant"
+          }
+        },
+        {
+          "id": "4.3",
+          "name": "Clarity / Professionalism",
+          "prompt": "Did the student communicate clearly and maintain professional boundaries?",
+          "scoring": {
+            "3": "Patient-friendly language; explains medical terms; professional tone; maintains boundaries; protects privacy; communicates limitations",
+            "2": "Occasional unexplained jargon or slightly informal tone; mostly professional but some boundaries or limitations unclear",
+            "1": "Excessive jargon; unprofessional; confusing language; breaches boundaries or overstates certainty"
+          }
+        },
+        {
+          "id": "4.4",
+          "name": "Handling Sensitive Topics",
+          "prompt": "Did the student approach sensitive areas with appropriate framing?",
+          "scoring": {
+            "3": "Approaches sensitive topics (substance use, mental health, sexual history) with appropriate framing and non-judgment (\"I ask all my patients about…\")",
+            "2": "Asks about sensitive topics but bluntly or without framing",
+            "1": "Avoids sensitive topics entirely or handles them inappropriately"
+          }
+        },
+        {
+          "id": "4.5",
+          "name": "Listening & Response to Cues",
+          "prompt": "Did the student pick up on verbal cues, concerns, and changes in the patient's story?",
+          "scoring": {
+            "3": "Recognizes verbal cues, uncertainty, concerns, and changes in the patient's story; avoids interrupting; follows up on important information",
+            "2": "Responds to obvious cues but overlooks subtler concerns or inconsistencies",
+            "1": "Ignores, contradicts, or prematurely redirects important information"
+          }
+        },
+        {
+          "id": "4.6",
+          "name": "Clinical Reasoning & Synthesis",
+          "prompt": "Did the student demonstrate sound clinical thinking during the encounter?",
+          "scoring": {
+            "3": "Identifies important findings; distinguishes relevant from irrelevant; recognizes red flags or uncertainty; reasoning is clinically coherent and appropriately cautious",
+            "2": "Recognizes some key findings but misses connections, alternatives, or uncertainty",
+            "1": "Reasoning is unsupported, unsafe, internally inconsistent, or absent when required"
+          }
+        }
+      ]
+    }
+  ],
+  "flags": [
+    "A score of 1 in Clinical Reasoning & Synthesis (4.6) or Clarity/Professionalism (4.3) should trigger review even when the total is high."
+  ],
+  "additionalFeedback": [
+    "Learning objective results (met/not met)",
+    "Top strengths with transcript citations",
+    "Areas for improvement with transcript citations",
+    "Actionable suggestions"
+  ]
+}

@@ -9,7 +9,7 @@ const accessVerifier = CognitoJwtVerifier.create({ userPoolId, clientId, tokenUs
 const idVerifier = CognitoJwtVerifier.create({ userPoolId, clientId, tokenUse: "id" });
 const random = () => randomBytes(32).toString("base64url");
 const pending = new Map<string, { state: string; nonce: string; verifier: string; callback: string; origin: string; destination: string; expires: number }>();
-const sessions = new Map<string, { token: string; expires: number; role: "student" | "faculty" }>();
+const sessions = new Map<string, { token: string; expires: number; role: "student" | "faculty"; email?: string }>();
 function cookie(req: IncomingMessage, name: string) {
   return req.headers.cookie?.split(";").map(v => v.trim()).find(v => v.startsWith(`${name}=`))?.slice(name.length + 1);
 }
@@ -39,7 +39,8 @@ export async function authenticatedStudent(req: IncomingMessage) {
   cleanup();
   const session = sessions.get(cookie(req, "twinverse_session") ?? "");
   if (!session) return null;
-  try { return await accessVerifier.verify(session.token); } catch { return null; }
+  // Access tokens carry no email, so the one verified at sign-in is attached for display names.
+  try { return { ...(await accessVerifier.verify(session.token)), ...(session.email ? { email: session.email } : {}) }; } catch { return null; }
 }
 export async function authRoute(req: IncomingMessage, res: ServerResponse, url: URL): Promise<boolean> {
   if (!url.pathname.startsWith("/api/auth/")) return false;
@@ -78,7 +79,7 @@ export async function authRoute(req: IncomingMessage, res: ServerResponse, url: 
       if (identity.nonce !== flow.nonce || identity.sub !== access.sub || identity.email_verified !== true) throw new Error("Identity verification failed");
       const role = flow.destination === "/faculty.html" ? "faculty" : "student";
       if (role === "faculty" && !sessionAllowsFaculty(role, access["cognito:groups"])) throw new Error("Faculty membership required");
-      const id = random(); sessions.set(id, { token: tokens.access_token, expires: access.exp * 1000, role });
+      const id = random(); sessions.set(id, { token: tokens.access_token, expires: access.exp * 1000, role, ...(typeof identity.email === "string" ? { email: identity.email } : {}) });
       setCookie(res, id, Math.max(0, access.exp - Math.floor(Date.now() / 1000))); redirect(res, `${flow.origin}${flow.destination}`);
     } catch { fail(); }
     return true;

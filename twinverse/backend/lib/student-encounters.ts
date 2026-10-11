@@ -6,7 +6,7 @@ import { fromNodeProviderChain } from "@aws-sdk/credential-providers";
 import { REGION, TABLE_NAME } from "./patients-stack.js";
 import { type ChatMessage, type GroundedReply } from "./preview-conversation.js";
 import { CSV_WYATT_ID, RICH_WYATT_ID, verifyContext, type PreviewContext } from "./preview-context.js";
-export type Encounter = { endedAt?: string; feedback?: import("./encounter-feedback.js").EncounterFeedback; encounterId: string; patientId: string; mode: "development-preview" | "published"; context?: PreviewContext; revision: number; version: number; messages: ChatMessage[]; requests: Record<string, { hash: string; revision: number }>; pending?: { requestId: string; hash: string; until: number }; updatedAt: string };
+export type Encounter = { endedAt?: string; encounterId: string; patientId: string; mode: "development-preview" | "published"; context?: PreviewContext; revision: number; version: number; messages: ChatMessage[]; requests: Record<string, { hash: string; revision: number }>; pending?: { requestId: string; hash: string; until: number }; updatedAt: string };
 export class EncounterError extends Error { constructor(public status: number, message: string) { super(message); this.name = "EncounterError"; } }
 export interface EncounterStore { get(student: string, encounterId: string): Promise<Encounter | undefined>; list(student: string): Promise<Encounter[]>; save(student: string, next: Encounter, expectedVersion?: number): Promise<void> }
 export function createEncounterStore(): EncounterStore {
@@ -48,7 +48,7 @@ export function publicEncounter(encounter: Encounter) {
     const label = medication ? `${String(context.evidence[`medication_profile.medications.${medication[1]}.name`] ?? "Medication")} · ${(medication[2] ?? "detail").replaceAll("_", " ")}` : id.split(".").filter(v => !/^\d+$/.test(v)).slice(1).join(" · ").replaceAll("_", " ");
     return { label, value: String(context.evidence[id]) };
   }) : [];
-  return { encounterId: encounter.encounterId, patientId: encounter.patientId, mode: encounter.mode, revision: encounter.revision, messages: encounter.messages.map(({ id, role, text, sequence, createdAt }) => ({ id, role, text, sequence, createdAt })), busy: !!encounter.pending && encounter.pending.until > Date.now(), readOnly: !context || !!encounter.endedAt, endedAt: encounter.endedAt ?? null, feedback: encounter.feedback ?? null,
+  return { encounterId: encounter.encounterId, patientId: encounter.patientId, mode: encounter.mode, revision: encounter.revision, messages: encounter.messages.map(({ id, role, text, sequence, createdAt }) => ({ id, role, text, sequence, createdAt })), busy: !!encounter.pending && encounter.pending.until > Date.now(), readOnly: !context || !!encounter.endedAt, endedAt: encounter.endedAt ?? null,
     patient: context?.card ?? { patientId: encounter.patientId, mode: "development-preview", approved: false, source: "CSV", fields: { name: "Wyatt Nelson", age: 18, background: "High school student" } },
     chart: { entries: chartEntries, documents: (context?.artifacts ?? []).filter(file=>released.some(f=>f.group===`artifact:${file.id}`)).map(file=>({id:file.id,title:file.title,findings:file.findings??"",contentType:file.content_type})), documentsAvailable: (context?.artifacts ?? []).some(file=>released.some(f=>f.group===`artifact:${file.id}`)), behavior: context?.card.approved ? "Faculty-reviewed chart settings determine when structured findings appear. No report files are available." : "Demo application behavior: show supplied clinical details discussed in this conversation. No faculty-approved chart release rules or report files are available." } };
 }
@@ -85,4 +85,14 @@ export async function sendTurn(store: EncounterStore, student: string, input: { 
     try { await store.save(student, unlocked, current.version); } catch { /* Never overwrite a completed or newer turn. */ }
     throw error;
   }
+}
+/** Ends the session so no further turns can be added. Feedback is requested separately (encounter-feedback.ts). Safe to repeat. */
+export async function endEncounter(store: EncounterStore, student: string, encounterId: string): Promise<Encounter> {
+  const current = await store.get(student, encounterId);
+  if (!current?.context) throw new EncounterError(404, "Encounter unavailable for this student.");
+  if (current.endedAt) return current;
+  if (current.pending && current.pending.until > Date.now()) throw new EncounterError(409, "Wait for the last patient reply before ending the session.");
+  const now = new Date().toISOString();
+  const next = { ...current, endedAt: now, updatedAt: now, version: current.version + 1 };
+  await store.save(student, next, current.version); return next;
 }

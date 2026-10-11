@@ -3,6 +3,7 @@ import { parseProfileText, exportProfile } from "./faculty-review.js";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { authenticatedStudent, activeSessionRole } from "./student-auth.js";
 import { generateFacultyProfile } from "./faculty-generation.js";
+import { facultyFeedbackRoute } from "./faculty-feedback.js";
 import {
   FacultyError,
   requireFaculty,
@@ -67,6 +68,16 @@ export async function facultyRoute(
     if(path==="/storage/status" && req.method==="GET") {send(200,{uploadsEnabled:process.env["ENABLE_PATIENT_FILES"]==="true"});return true;}
     if (path === "/schema" && req.method === "GET") {
       send(200, facultySchema);
+      return true;
+    }
+    const feedback = await facultyFeedbackRoute(
+      path,
+      req.method ?? "",
+      () => body(req),
+      identity?.email ?? "Instructor",
+    );
+    if (feedback !== undefined) {
+      send(200, feedback);
       return true;
     }
     const store = await facultyStore();
